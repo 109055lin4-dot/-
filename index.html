@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>妹目壽司 官方維基百科 Wiki</title>
+    <style>
+        /* 基礎樣式與維基百科配色 */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background: #f6f6f6; color: #202122; padding: 20px; transition: transform 0.3s ease; }
+        
+        /* 傾斜 8 秒的特效動畫 */
+        @keyframes tiltAnimation {
+            0% { transform: rotate(0deg); }
+            15% { transform: rotate(7deg) scale(0.95); }
+            50% { transform: rotate(-5deg) scale(1.02); }
+            85% { transform: rotate(4deg); }
+            100% { transform: rotate(0deg); }
+        }
+        .tilt-active { animation: tiltAnimation 8s linear; }
+
+        /* RWD 裝置模擬器外框 */
+        #simulator-controls { background: #fff; padding: 15px; border: 1px solid #a2a9b1; margin-bottom: 20px; border-radius: 4px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .btn { background: #f8f9fa; border: 1px solid #a2a9b1; padding: 6px 12px; cursor: pointer; border-radius: 2px; font-size: 14px; }
+        .btn:hover { background: #eeeeee; }
+        .btn-active { background: #3366cc; color: white; border-color: #3366cc; }
+        
+        /* 預覽容器設定 */
+        #web-container { max-width: 1200px; margin: 0 auto; background: white; border: 1px solid #a2a9b1; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.5s ease; }
+        
+        /* 模擬各式手機/裝置尺寸 */
+        .view-desktop { max-width: 100% !important; }
+        .view-tablet { max-width: 768px !important; }
+        .view-oppo { max-width: 412px !important; border: 12px solid #222 !important; border-radius: 20px; } /* 模擬你的 OPPO 手機 */
+        .view-iphone { max-width: 390px !important; border: 12px solid #111 !important; border-radius: 30px; }
+
+        /* Wiki 佈局 */
+        header { border-bottom: 1px solid #a2a9b1; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        h1 { font-family: 'Georgia', serif; font-weight: normal; font-size: 28px; }
+        
+        .wiki-layout { display: flex; gap: 20px; }
+        .wiki-sidebar { width: 220px; border-right: 1px solid #a2a9b1; padding-right: 15px; flex-shrink: 0; }
+        .wiki-sidebar ul { list-style: none; }
+        .wiki-sidebar li { margin-bottom: 10px; font-size: 14px; }
+        .wiki-sidebar a { color: #3366cc; text-decoration: none; }
+        .wiki-sidebar a:hover { text-decoration: underline; }
+        
+        .wiki-content { flex-grow: 1; line-height: 1.6; }
+        
+        /* 右側資訊卡 */
+        .info-box { float: right; width: 280px; background: #f8f9fa; border: 1px solid #a2a9b1; padding: 10px; margin-left: 20px; font-size: 13px; }
+        .info-box-title { background: #ced4da; text-align: center; font-weight: bold; padding: 5px; margin-bottom: 5px; }
+        .info-box table { width: 100%; border-collapse: collapse; }
+        .info-box td { padding: 4px; border-bottom: 1px solid #eaecf0; }
+
+        /* 功能模組區 */
+        .interactive-section { background: #f8f9fa; border: 1px solid #3366cc; border-left: 5px solid #3366cc; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .station-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-top: 10px; }
+        .station-card { background: white; border: 1px solid #a2a9b1; padding: 10px; border-radius: 4px; font-size: 13px; }
+
+        /* 手機板隱藏側邊欄以防擠壓 */
+        @media (max-width: 600px) {
+            .wiki-layout { flex-direction: column; }
+            .wiki-sidebar { width: 100%; border-right: none; border-bottom: 1px solid #a2a9b1; padding-bottom: 15px; }
+            .info-box { float: none; width: 100%; margin-left: 0; margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 頂部控制面板：語系與裝置模擬器 -->
+    <div id="simulator-controls">
+        <strong>🌐 語言 (Language):</strong>
+        <button class="btn btn-active" id="lang-zh" onclick="switchLang('zh')">中文</button>
+        <button class="btn" id="lang-en" onclick="switchLang('en')">English</button>
+        
+        <span style="margin-left: 15px;"><strong>📱 顯示裝置切換:</strong></span>
+        <button class="btn btn-active" id="dev-pc" onclick="setDevice('pc')">電腦模式</button>
+        <button class="btn" id="dev-pad" onclick="setDevice('pad')">平板電腦</button>
+        <button class="btn" id="dev-oppo" onclick="setDevice('oppo')">我的 OPPO 手機</button>
+        <button class="btn" id="dev-apple" onclick="setDevice('apple')">iPhone 蘋果手機</button>
+
+        <button class="btn" style="background: #ffcc00; font-weight: bold; margin-left: auto;" onclick="triggerTilt()">⚠️ 碰一下網頁歪掉（8秒）</button>
+    </div>
+
+    <!-- 維基百科主要網頁容器 -->
+    <div id="web-container" class="view-desktop">
+        <header>
+            <h1 id="wiki-title">妹目壽司 (重製版 V12)</h1>
+            <div>
+                <span id="txt-user">總工程師：拉不拉斯 (準國中生)</span>
+            </div>
+        </header>
+
+        <div class="wiki-layout">
+            <!-- 側邊導覽欄 -->
+            <aside class="wiki-sidebar">
+                <h3 style="font-size: 14px; margin-bottom: 10px; color: #72777d;" id="nav-title">導覽目錄</h3>
+                <ul>
+                    <li><a href="#sec-history" id="nav-h1">1. 遊戲歷史</a></li>
+                    <li><a href="#sec-rules" id="nav-h2">2. 遊戲基礎法規</a></li>
+                    <li><a href="#sec-economy" id="nav-h3">3. 金融貨幣與水電</a></li>
+                    <li><a href="#sec-stations" id="nav-h4">4. 捷運與車站查詢</a></li>
+                    <li><a href="#sec-currencies" id="nav-h5">5. 42種歷史貨幣清單</a></li>
+                </ul>
+            </aside>
+
+            <!-- 主要條目內文 -->
+            <main class="wiki-content">
+                
+                <!-- 右側維基百科資訊卡 -->
+                <div class="info-box">
+                    <div class="info-box-title" id="info-title">妹目壽司 Meme Sushi</div>
+                    <table>
+                        <tr><td id="info-v">當前版本</td><td><b>V12 重製版</b> (2026/06/04)</td></tr>
+                        <tr><td id="info-author">研發作者</td><td>拉不拉斯 (研發主導)、妹主義</td></tr>
+                        <tr><td id="info-age">作者學歷</td><td>國小畢業 / 準國中生</td></tr>
+                        <tr><td id="info-area">主要區域</td><td>135區 (地形平坦)</td></tr>
+                        <tr><td id="info-target">最終目標</td><td>賺到 <b>100 兆籌幣</b></td></tr>
+                    </table>
+                </div>
+
+                <!-- 互動專區：虛擬簽到 -->
+                <div class="interactive-section">
+                    <h3 id="act-title">🎁 每日中央老銀行線上簽到</h3>
+                    <p id="act-desc">點擊下方按鈕向中央核心處理器簽到，可自動發送新手引導籌幣。</p>
+                    <button class="btn" style="background: #3366cc; color: white; margin-top: 10px;" onclick="checkIn()" id="btn-signin">領取新手贈送 1000$ 籌幣</button>
+                    <div id="signin-status" style="margin-top: 10px; font-weight: bold; color: green;"></div>
+                </div>
+
+                <!-- 區段 1：歷史 -->
+                <h2 id="sec-history" style="border-bottom: 1px solid #a2a9b1; margin-top: 20px;">1. 遊戲歷史簡介</h2>
+                <p id="p-history">
+                    《妹目壽司》最早創立於 2016 年 6 月 20 日，由總工程師拉不拉斯與妹妹「妹主義」在家中遊玩拼豆時共同發想。經歷了九年時間與高達 23 萬次的更新迭代，原版遊戲因大掃除事件以及作者升上六年級11歲學業繁忙而暫時佚失。目前網頁所載為 <b>V12 全新重製版本</b>，遊戲設施已全面完工，由拉不拉斯（現已國小畢業，成為準國中生）持續慢速更新中。
+                </p>
+
+                <!-- 區段 2：法規 -->
+                <h2 id="sec-rules" style="border-bottom: 1px solid #a2a9b1; margin-top: 20px;">2. 遊戲核心法規</h2>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li id="r1">第一條：車站之間的移動只能搭乘電車，遊戲內部無走路功能。</li>
+                    <li id="r2">第二條：不允許 AI 亂修改遊戲設定內容。</li>
+                    <li id="r3">第三條：保持遊戲規矩、不破壞、和平共處。</li>
+                    <li id="r4">第四條：若語音輸入出現注音相同但字體錯誤，AI 有義務自動改正。</li>
+                </ul>
+
+                <!-- 區段 3：金融與水電費 -->
+                <h2 id="sec-economy" style="border-bottom: 1px solid #a2a9b1; margin-top: 20px;">3. 金融經濟與水電變數</h2>
+                <p id="p-eco">
+                    本遊戲基礎運算匯率為：<b>1 新台幣 = 200 籌幣 = 400 林幣</b>。主流營運皆以「籌幣」計算。
+                    在 135 區域內，水電費極其昂貴：1 杯水（100毫升）需 50 元；1 分鐘電力需 50 元。
+                </p>
+
+                <!-- 區段 4：捷運與車站即時查詢 -->
+                <h2 id="sec-stations" style="border-bottom: 1px solid #a2a9b1; margin-top: 20px;">4. 捷運路線與車站狀態查詢</h2>
+                <div class="interactive-section" style="border-color: #00af89;">
+                    <p><strong>🚇 捷運系統運作狀態：</strong></p>
+                    <button class="btn" style="background: #00af89; color: white;" onclick="checkTrain('mml')">民權民生線 (MML)</button>
+                    <button class="btn" style="background: #ffcc00; color: #222;" onclick="checkTrain('ylb')">黃燈閃爍線 (YLB)</button>
+                    <div id="train-status" style="margin-top: 10px; padding: 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-weight: bold;">點選上方線路查看營運狀況。</div>
+                </div>
+
+                <div class="station-grid">
+                    <div class="station-card">
+                        <b style="color: #3366cc;">MML-1 馬姆基地</b><br>
+                        最老車站 (2016建立)<br>ATM、外幣兌換全面開放。
+                    </div>
+                    <div class="station-card">
+                        <b style="color: #3366cc;">MML-2 鋼琴站</b><br>
+                        設有國家音樂廳，民眾自行演奏可賺取打賞。
+                    </div>
+                    <div class="station-card" style="background: #ffebe6; border-color: #ff3330;">
+                        <b style="color: #ff3330;">MML-3 運杏安和</b><br>
+                        ⚠️ <b>不開放</b>：因食品太多發生嚴重倒塌事件，ATM 被埋。
+                    </div>
+                    <div class="station-card">
+                        <b style="color: #3366cc;">MML-4 國際機場</b><br>
+                        出租店鋪開放（週租 9000 籌幣），設有國際小賣場。
+                    </div>
+                    <div class="station-card">
+                        <b style="color: #3366cc;">MML-8 麻木基地</b><br>
+                        包含<b>天字印刷廠</b>（裁紙機16000）與<b>海鮮市場</b>（姐姐坐鎮）。
+                    </div>
+                </div>
+
+                <!-- 區段 5：42種貨幣 -->
+                <h2 id="sec-currencies" style="border-bottom: 1px solid #a2a9b1; margin-top: 20px;">5. 歷史 42 種多重宇宙貨幣存在紀錄</h2>
+                <p style="font-size: 13px; color: #555;" id="p-curr">
+                    以下為老銀行計算機中所收錄流通的超巨量貨幣，雖然目前主版本精簡為籌幣，但歷史數據依然健在：
+                </p>
+                <div style="background: #f8f9fa; padding: 10px; border: 1px dashed #a2a9b1; font-size: 12px; word-break: break-all; margin-top: 5px;">
+                    林幣、伊幣、T幣、新林幣、舊林幣、翁幣、籌幣、新籌幣、舊籌幣、M幣、金幣、大幣、銀幣、R幣、O幣、台幣、新幣、北幣、南幣、幣東、西幣、方幣、人民幣、水幣、長幣、楊幣、妹幣、小幣、西元幣、元幣、舊翁幣、新翁幣、9幣、<b>@幣 (與 Threads 脆官方按讚自動發行連動)</b>、水幣、火幣、/石幣、重幣、妥幣、紙幣、3幣、M幣、F幣。
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- 網頁互動控制邏輯 JavaScript -->
+    <script>
+        // 語系文本資料庫
+        const langData = {
+            zh: {
+                title: "妹目壽司 (重製版 V12)",
+                navTitle: "導覽目錄",
+                h1: "1. 遊戲歷史", h2: "2. 遊戲基礎法規", h3: "3. 金融貨幣與水電", h4: "4. 捷運與車站查詢", h5: "5. 42種歷史貨幣清單",
+                infoTitle: "妹目壽司 Meme Sushi",
+                infoV: "當前版本", infoAuthor: "研發作者", infoAge: "作者學歷", infoArea: "主要區域", infoTarget: "最終目標",
+                actTitle: "🎁 每日中央老銀行線上簽到",
+                actDesc: "點擊下方按鈕向中央核心處理器簽到，可自動發送新手引導籌幣。",
+                btnSign: "領取新手贈送 1000$ 籌幣",
+                history: "《妹目壽司》最早創立於 2016 年 6 月 20 日，由總工程師拉不拉斯與妹妹「妹主義」在家中遊玩拼豆時共同發想。經歷了九年時間與高達 23 萬次的更新迭代，原版遊戲因大掃除事件以及作者升上六年級11歲學業繁忙而暫時佚失。目前網頁所載為 V12 全新重製版本，遊戲設施已全面完工，由拉不拉斯（現已國小畢業，成為準國中生）持續慢速更新中。"
+            },
+            en: {
+                title: "Meme Sushi (Remastered V12)",
+                navTitle: "Navigation",
+                h1: "1. Game History", h2: "2. Core Regulations", h3: "3. Economy & Utilities", h4: "4. MRT Station Inquiry", h5: "5. 42 Historical Currencies",
+                infoTitle: "Meme Sushi Wiki",
+                infoV: "Version", infoAuthor: "Developer", infoAge: "Education", infoArea: "Main Zone", infoTarget: "Final Target",
+                actTitle: "🎁 Daily Central Bank Check-in",
+                actDesc: "Click the button to check in with the central processor and claim starter coins.",
+                btnSign: "Claim Starter 1000$ Chou-Bi",
+                history: "Founded on June 20, 2016, 'Meme Sushi' was conceptualized using Perler Beads by Chief Engineer Labulas and his sister Meme-ism. After 9 years and 230,000 updates, the original game asset was lost during a spring cleaning event and the author's busy grade 6 schedule. Version 12 marks a total remaster completed by Labulas, who has now graduated to middle school!"
+            }
+        };
+
+        // 語言切換
+        function switchLang(lang) {
+            document.getElementById('lang-zh').classList.toggle('btn-active', lang === 'zh');
+            document.getElementById('lang-en').classList.toggle('btn-active', lang === 'en');
+            
+            document.getElementById('wiki-title').innerText = langData[lang].title;
+            document.getElementById('nav-title').innerText = langData[lang].navTitle;
+            document.getElementById('nav-h1').innerText = langData[lang].h1;
+            document.getElementById('nav-h2').innerText = langData[lang].h2;
+            document.getElementById('nav-h3').innerText = langData[lang].h3;
+            document.getElementById('nav-h4').innerText = langData[lang].h4;
+            document.getElementById('nav-h5').innerText = langData[lang].h5;
+            document.getElementById('info-title').innerText = langData[lang].infoTitle;
+            document.getElementById('act-title').innerText = langData[lang].actTitle;
+            document.getElementById('act-desc').innerText = langData[lang].actDesc;
+            document.getElementById('btn-signin').innerText = langData[lang].btnSign;
+            document.getElementById('p-history').innerText = langData[lang].history;
+        }
+
+        // 多裝置顯示方式 RWD 切換（確保在你的 OPPO、蘋果手機上不擠在一起）
+        function setDevice(device) {
+            const container = document.getElementById('web-container');
+            container.className = ''; // 清除舊樣式
+            
+            // 移除所有按鈕啟用狀態
+            document.getElementById('dev-pc').classList.remove('btn-active');
+            document.getElementById('dev-pad').classList.remove('btn-active');
+            document.getElementById('dev-oppo').classList.remove('btn-active');
+            document.getElementById('dev-apple').classList.remove('btn-active');
+
+            if (device === 'pc') {
+                container.classList.add('view-desktop');
+                document.getElementById('dev-pc').classList.add('btn-active');
+            } else if (device === 'pad') {
+                container.classList.add('view-tablet');
+                document.getElementById('dev-pad').classList.add('btn-active');
+            } else if (device === 'oppo') {
+                container.classList.add('view-oppo');
+                document.getElementById('dev-oppo').classList.add('btn-active');
+            } else if (device === 'apple') {
+                container.classList.add('view-iphone');
+                document.getElementById('dev-apple').classList.add('btn-active');
+            }
+        }
+
+        // 碰一下網頁傾斜歪掉 8 秒功能
+        function triggerTilt() {
+            document.body.classList.add('tilt-active');
+            alert("⚠️ 系統警報：你碰到了核心感應器！網頁將傾斜歪掉 8 秒鐘！");
+            setTimeout(() => {
+                document.body.classList.remove('tilt-active');
+            }, 8000);
+        }
+
+        // 虛擬線上簽到
+        function checkIn() {
+            document.getElementById('signin-status').innerText = "🎉 簽到成功！中央老銀行已自動撥款 1,000$ 籌幣至您的帳號！伺服器壽命正持續運作記錄中。";
+        }
+
+        // 捷運路線即時查詢
+        function checkTrain(line) {
+            const statusBox = document.getElementById('train-status');
+            if (line === 'mml') {
+                statusBox.innerHTML = "<span style='color: green;'>🟢 民權民生線 (MML) 狀態：全面通車營運中！</span><br>正在負責135區域的全部交通。目前深夜由 AI 1號與 AI 2號雙向駕駛電車壓力測試中。";
+            } else if (line === 'ylb') {
+                statusBox.innerHTML = "<span style='color: red;'>🔴 黃燈閃爍線 (YLB) 狀態：暫停使用 / 未開放。</span><br>規劃路線行經 馬姆→充電3C→國際→世朗→信義。目前正等待總工程師拉不拉斯進行第二階段 Beta 更新調度。";
+            }
+        }
+    </script>
+</body>
+</html>
