@@ -3,1367 +3,1221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>妹目壽司 MML Central Management System V12</title>
+    <title>妹目壽司 重製版 V13 - 135/132數位特區控制台</title>
+    <!-- Tailwind CSS for modern responsive layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* 全域像素復古風/科技感樣式 */
-        :root {
-            --bg-color: #0d1117;
-            --panel-bg: #161b22;
-            --border-color: #30363d;
-            --text-color: #c9d1d9;
-            --accent-mml: #58a6ff;
-            --accent-ylb: #f2cc60;
-            --text-bright: #ffffff;
-            --success: #238636;
-            --danger: #da3633;
-        }
-
-        * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, "Microsoft JhengHei";
-            margin: 0;
-            padding: 0;
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 15px;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(135deg, #1f242c, #0d1117);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-
-        .top-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .branding h1 {
-            color: var(--text-bright);
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .branding span {
-            font-size: 11px;
-            background: var(--danger);
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .lang-selector button {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 12px;
-            margin-left: 4px;
-            transition: all 0.2s;
-        }
-
-        .lang-selector button.active {
-            background: var(--accent-mml);
-            color: black;
-            font-weight: bold;
-            border-color: var(--accent-mml);
-        }
-
-        /* 智慧搜尋字典 */
-        .search-box-container {
-            width: 100%;
-            position: relative;
-            margin-top: 10px;
-        }
-
-        .search-box {
-            width: 100%;
-            background: #090d13;
-            border: 1px solid var(--border-color);
-            color: var(--text-bright);
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .search-box:focus {
-            border-color: var(--accent-mml);
-            box-shadow: 0 0 8px rgba(88, 166, 255, 0.3);
-        }
-
-        /* 伺服器核心數據模擬器面板 */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .dash-card {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 12px;
-            text-align: center;
-        }
-
-        .dash-card .label {
-            font-size: 11px;
-            text-transform: uppercase;
-            color: #8b949e;
-            margin-bottom: 5px;
-        }
-
-        .dash-card .value {
-            font-size: 16px;
-            font-weight: bold;
-            color: var(--text-bright);
-        }
-
-        .dash-card.env-day { border-left: 5px solid #f2cc60; }
-        .dash-card.env-night { border-left: 5px solid #1f6feb; }
-
-        /* 主架構佈局 */
-        .main-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-
-        @media (min-width: 992px) {
-            .main-container {
-                grid-template-columns: 280px 1fr;
-            }
-        }
-
-        /* 側邊導覽欄 */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .nav-panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 15px;
-        }
-
-        .nav-panel h3 {
-            color: var(--text-bright);
-            font-size: 14px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 5px;
-        }
-
-        .nav-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .nav-item button {
-            width: 100%;
-            text-align: left;
-            background: transparent;
-            border: none;
-            color: var(--text-color);
-            padding: 8px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .nav-item button:hover {
-            background: #21262d;
-            color: var(--text-bright);
-        }
-
-        .nav-item button.active {
-            background: #1f6feb;
-            color: white;
-        }
-
-        .line-badge {
-            font-size: 9px;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-weight: bold;
-            color: black;
-        }
-
-        .badge-mml { background-color: var(--accent-mml); }
-        .badge-ylb { background-color: var(--accent-ylb); }
-
-        /* 主內容顯示區 */
-        .content-area {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 20px;
-            min-height: 500px;
-        }
-
-        .view-section {
-            display: none;
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-        h2.section-title {
-            color: var(--text-bright);
-            margin-bottom: 15px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* 菜單/品項表格設計 */
-        .menu-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        .menu-table th, .menu-table td {
-            border: 1px solid var(--border-color);
-            padding: 10px;
-            text-align: left;
-        }
-
-        .menu-table th {
-            background-color: #1f242c;
-            color: var(--text-bright);
-        }
-
-        .menu-table tr:nth-child(even) {
+            font-family: 'Noto Sans TC', sans-serif;
             background-color: #0d1117;
+            color: #c9d1d9;
         }
-
-        .menu-table tr:hover {
-            background-color: #21262d;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-
-        /* 戳泡泡解壓按鈕 */
-        .pop-btn {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 3px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 11px;
+        ::-webkit-scrollbar-track {
+            background: #161b22;
         }
-
-        .pop-btn:hover {
-            background: #2ea44f;
-        }
-
-        /* 拼豆工作坊畫布 */
-        .bead-workshop {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 15px;
-        }
-
-        .bead-grid {
-            display: grid;
-            grid-template-columns: repeat(8, 35px);
-            grid-template-rows: repeat(8, 35px);
-            gap: 2px;
-            background: #0d1117;
-            padding: 5px;
-            border-radius: 6px;
-            border: 2px solid var(--border-color);
-        }
-
-        .bead-pixel {
-            background-color: #30363d;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.3);
-            position: relative;
-        }
-
-        .bead-pixel::after {
-            content: '';
-            position: absolute;
-            top: 30%;
-            left: 30%;
-            width: 40%;
-            height: 40%;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-        }
-
-        .bead-palette {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            min-width: 200px;
-        }
-
-        .palette-color {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 4px;
-            border: 1px solid transparent;
-        }
-
-        .palette-color.selected {
-            background: #21262d;
-            border-color: var(--accent-mml);
-        }
-
-        .color-dot {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 1px solid #fff;
-        }
-
-        /* 售票機介面 */
-        .vending-machine {
-            background: #1f242c;
-            border: 2px solid #444;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 4px;
-            color: var(--text-bright);
-        }
-
-        .form-group select {
-            width: 100%;
-            background: #0d1117;
-            color: var(--text-bright);
-            border: 1px solid var(--border-color);
-            padding: 8px;
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
             border-radius: 4px;
         }
-
-        .ticket-result-container {
-            margin-top: 15px;
-            text-align: center;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b949e;
         }
-
-        #ticketCanvas {
-            background: #fff5cc;
-            border: 2px dashed #b58900;
-            border-radius: 4px;
-            max-width: 100%;
-        }
-
-        /* 歷史新聞專區 & 後台插槽 */
-        .news-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .news-card {
-            background: #1f242c;
-            border-left: 4px solid var(--accent-mml);
-            padding: 12px;
-            border-radius: 4px;
-        }
-
-        .news-meta {
-            font-size: 11px;
-            color: #8b949e;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .news-title {
-            color: var(--text-bright);
-            font-weight: bold;
-            margin: 5px 0;
-        }
-
-        .admin-box {
-            background: #211c1c;
-            border: 1px solid #da3633;
-            border-radius: 6px;
-            padding: 15px;
-            margin-top: 25px;
-        }
-
-        .admin-box h3 {
-            color: #ff7b72;
-            margin-bottom: 10px;
-        }
-
-        .admin-box input, .admin-box textarea {
-            width: 100%;
-            background: #0d1117;
-            border: 1px solid var(--border-color);
-            color: white;
-            padding: 8px;
-            margin-bottom: 8px;
-            border-radius: 4px;
-        }
-
-        .admin-box button {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .code-output {
-            background: #000;
-            color: #00ff00;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 11px;
-            margin-top: 8px;
-            white-space: pre-wrap;
-            border-radius: 4px;
-            display: none;
-        }
-
-        /* 計算機元件 */
-        .calc-box {
-            background: #1f242c;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            margin-top: 15px;
-        }
-
-        /* 高亮搜尋項 */
-        .highlight-match {
-            background-color: rgba(242, 204, 96, 0.4) !important;
-            border: 2px solid var(--accent-ylb) !important;
-        }
+        /* Device preview frames */
+        .device-pc { width: 100%; max-width: 1400px; transition: all 0.3s ease; }
+        .device-tablet { width: 1024px; height: 768px; margin: 0 auto; border: 12px solid #30363d; border-radius: 24px; overflow-y: auto; transition: all 0.3s ease; }
+        .device-mobile { width: 412px; height: 892px; margin: 0 auto; border: 12px solid #30363d; border-radius: 36px; overflow-y: auto; transition: all 0.3s ease; }
+        .device-iphone-l { width: 844px; height: 390px; margin: 0 auto; border: 12px solid #30363d; border-radius: 32px; overflow-y: auto; transition: all 0.3s ease; }
         
-        .alert-banner {
-            background: rgba(218, 54, 51, 0.2);
-            border: 1px solid var(--danger);
-            color: #ff7b72;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
+        /* Pulse Animation */
+        @keyframes pulse-yellow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
         }
+        .pulse-ylb { animation: pulse-yellow 2s infinite; }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
 
-    <!-- 頂部核心管理面板 -->
-    <header>
-        <div class="top-row">
-            <div class="branding">
-                <h1 id="txt-title">妹目壽司 中央數據運作資料庫 <span id="txt-version">V12 重製版</span></h1>
-            </div>
-            <div class="lang-selector">
-                <button onclick="switchLang('zh_tw')" class="active" id="btn-tw">繁體中文</button>
-                <button onclick="switchLang('zh_cn')">简体中文</button>
-                <button onclick="switchLang('ja')">日本語</button>
-                <button onclick="switchLang('ko')">한국어</button>
-            </div>
+    <!-- Top Device Controller -->
+    <div class="max-w-7xl mx-auto mb-6 bg-gray-900 p-4 rounded-xl border border-gray-800 flex flex-wrap justify-between items-center gap-4">
+        <div>
+            <h1 class="text-xl font-black text-yellow-400 flex items-center gap-2">
+                <span class="w-4 h-4 bg-yellow-400 rounded-full inline-block animate-ping"></span>
+                妹目壽司 V13 重製控制台
+            </h1>
+            <p class="text-xs text-gray-400">當前版本：V13 (更新於 2026/07/15) | 總工程師：拉不拉斯</p>
         </div>
-
-        <!-- 伺服器同步計時器數據 -->
-        <div class="dashboard-grid">
-            <div class="dash-card">
-                <div class="label" id="lbl-real-elapsed">真實世界總運行時間 (Real Elapsed)</div>
-                <div class="value" id="val-real-time">00天 00時 00分 00秒</div>
-            </div>
-            <div class="dash-card" id="card-env">
-                <div class="label" id="lbl-game-env">遊戲環境狀態 (Environment)</div>
-                <div class="value" id="val-game-env">計算中...</div>
-            </div>
-            <div class="dash-card">
-                <div class="label" id="lbl-game-date">遊戲專用曆法時間 (Game Calendar)</div>
-                <div class="value" id="val-game-date">第 1 年 1 月 1 日</div>
-            </div>
-            <div class="dash-card">
-                <div class="label" id="lbl-countdown">週期流逝倒數 (Cycle Countdown)</div>
-                <div class="value" id="val-countdown">00:00</div>
-            </div>
-        </div>
-
-        <!-- 智慧搜尋字典 -->
-        <div class="search-box-container">
-            <input type="text" class="search-box" id="global-search" oninput="doSmartSearch()" placeholder="🔍 輸入關鍵字智慧搜尋... (支援搜尋產地、拼豆方塊顏色、車站、金額，系統將即時交叉高亮顯示)">
-        </div>
-    </header>
-
-    <!-- 主區塊佈局 -->
-    <div class="main-container">
-        
-        <!-- 側邊選單：包含全部車站連結跳轉與核心模組 -->
-        <div class="sidebar">
-            <div class="nav-panel">
-                <h3 id="sidebar-core-title">核心系統中央模組</h3>
-                <ul class="nav-list">
-                    <li class="nav-item"><button onclick="showView('view-menu')" id="btn-nav-menu" class="active">🍣 妹目創意菜單</button></li>
-                    <li class="nav-item"><button onclick="showView('view-vending')" id="btn-nav-vending">🎫 智慧自動售票機</button></li>
-                    <li class="nav-item"><button onclick="showView('view-workshop')" id="btn-nav-workshop">🎨 拼豆工作坊</button></li>
-                    <li class="nav-item"><button onclick="showView('view-airport')" id="btn-nav-airport">🏪 國際機場小賣場</button></li>
-                    <li class="nav-item"><button onclick="showView('view-utility')" id="btn-nav-utility">💧 水利電力計算機</button></li>
-                    <li class="nav-item"><button onclick="showView('view-laws')" id="btn-nav-laws">📜 135區法律與政策</button></li>
-                    <li class="nav-item"><button onclick="showView('view-news')" id="btn-nav-news">📰 自由新聞發布區</button></li>
-                </ul>
-            </div>
-
-            <div class="nav-panel">
-                <h3 id="sidebar-station-title">135區車站聯通網絡</h3>
-                <ul class="nav-list">
-                    <li class="nav-item"><button onclick="showView('st-mml1')">🚉 MML-1 馬姆基地 <span class="line-badge badge-mml">MML</span><span class="line-badge badge-ylb">YLB</span></button></li>
-                    <li class="nav-item"><button onclick="showView('st-mml2')">🚉 MML-2 鋼琴站 <span class="line-badge badge-mml">MML</span></button></li>
-                    <li class="nav-item"><button onclick="showView('st-mml3')" style="color:var(--danger)">⚠️ MML-3 運杏安和 (事故)</button></li>
-                    <li class="nav-item"><button onclick="showView('st-mml4')">🚉 MML-4 國際機場 <span class="line-badge badge-mml">MML</span><span class="line-badge badge-ylb">YLB</span></button></li>
-                    <li class="nav-item"><button onclick="showView('st-mml5')">🚉 MML-5 婆不基地 <span class="line-badge badge-mml">MML</span></button></li>
-                    <li class="nav-item"><button onclick="showView('st-mml6')">🚉 MML-6 世朗站 <span class="line-badge badge-mml">MML</span><span class="line-badge badge-ylb">YLB</span></button></li>
-                    <li class="nav-item"><button onclick="showView('st-mml7')">🚉 MML-7 充電3C站 <span class="line-badge badge-mml">MML</span><span class="line-badge badge-ylb">YLB</span></button></li>
-                    <li class="nav-item"><button onclick="showView('st-mml8')">🚉 MML-8 麻木基地 <span class="line-badge badge-mml">MML</span></button></li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- 主顯示內容 -->
-        <div class="content-area" id="main-content-wrapper">
-
-            <!-- 模組 1: 妹目壽司創意菜單 -->
-            <div id="view-menu" class="view-section active search-target">
-                <h2 class="section-title"><span id="m-title">妹目壽司 - 拼豆創意菜單</span></h2>
-                <blockquote style="background: #21262d; padding: 10px; border-left: 4px solid var(--accent-mml); margin-bottom: 15px;" id="m-desc">
-                    歡迎來到妹目壽司，品嚐獨一無二的拼豆藝術與美味體驗！所有餐點和飲品皆為精緻拼豆模型，提供視覺享受與獨特互動體驗。
-                </blockquote>
-                
-                <h3 style="color:var(--accent-mml); margin: 10px 0;" id="cat-1">一、 壽司類 (拼豆握壽司 & 軍艦)</h3>
-                <table class="menu-table">
-                    <thead><tr><th id="th-item">品項名稱</th><th id="th-price">價格 (籌幣)</th><th id="th-action">互動式體驗</th></tr></thead>
-                    <tbody id="sushi-rows">
-                        <tr><td>小紅鮭壽司</td><td>50</td><td>-</td></tr>
-                        <tr><td>鮭魚壽司</td><td>100</td><td>-</td></tr>
-                        <tr><td>鮪魚壽司</td><td>100</td><td>-</td></tr>
-                        <tr><td>魷魚壽司</td><td>100</td><td>-</td></tr>
-                        <tr><td>牛肉壽司</td><td>100</td><td>-</td></tr>
-                        <tr><td>蛋壽司</td><td>100</td><td>-</td></tr>
-                        <tr><td>蝦子壽司</td><td>100</td><td>-</td></tr>
-                        <tr><td>起司牛肉壽司</td><td>100</td><td>-</td></tr>
-                        <tr><td>紅鮭壽司</td><td>100</td><td>-</td></tr>
-                        <tr><td>紅鮭條</td><td>100</td><td>-</td></tr>
-                        <tr><td>鮭魚卵壽司 (醬油漬/橘)</td><td>150</td><td>-</td></tr>
-                        <tr><td>鮭魚卵壽司 (鹽漬/紅)</td><td>150</td><td>-</td></tr>
-                        <tr><td>炙燒干貝壽司</td><td>150</td><td>-</td></tr>
-                        <tr><td>龍蝦壽司</td><td>150</td><td>-</td></tr>
-                        <tr><td>玉米軍艦</td><td>150</td><td>-</td></tr>
-                        <tr><td>鮭魚肚壽司</td><td>200</td><td>-</td></tr>
-                    </tbody>
-                </table>
-
-                <h3 style="color:var(--accent-mml); margin: 10px 0;" id="cat-2">二、 輕食類與三、速食類</h3>
-                <table class="menu-table">
-                    <tbody>
-                        <tr><td>飯糰</td><td>50</td><td>-</td></tr>
-                        <tr><td>薯條</td><td>150</td><td>-</td></tr>
-                        <tr><td>肉漢堡</td><td>150</td><td>-</td></tr>
-                        <tr><td>素漢堡</td><td>150</td><td>-</td></tr>
-                    </tbody>
-                </table>
-
-                <h3 style="color:var(--accent-mml); margin: 10px 0;" id="cat-4">四、 糕點類 (蛋糕)</h3>
-                <table class="menu-table">
-                    <tbody>
-                        <tr><td>藍莓蛋糕</td><td>300</td><td>-</td></tr>
-                        <tr><td>草莓蛋糕</td><td>300</td><td>-</td></tr>
-                        <tr><td>起司蛋糕</td><td>300</td><td>-</td></tr>
-                        <tr><td>橘子蛋糕</td><td>300</td><td>-</td></tr>
-                    </tbody>
-                </table>
-
-                <h3 style="color:var(--accent-mml); margin: 10px 0;" id="cat-5">五、 飲品類 & 六、甜品類</h3>
-                <p style="font-size: 11px; color:#8b949e; margin-bottom: 5px;" id="pop-tip">💡 綠杯飲料與刨冰系列支援Web Audio特殊保鮮膜解壓聲，點擊右側按鈕試聽！</p>
-                <table class="menu-table">
-                    <tbody>
-                        <tr><td>可樂</td><td>50</td><td>-</td></tr>
-                        <tr><td>雪碧</td><td>50</td><td>-</td></tr>
-                        <tr><td>冰島威士忌</td><td>300</td><td>-</td></tr>
-                        <tr><td>普通刨冰 (不加配料)</td><td>350</td><td><button class="pop-btn" onclick="triggerPopSound()">🔨 牙籤插破保鮮膜!</button></td></tr>
-                        <tr><td>綠杯雪碧</td><td>150</td><td><button class="pop-btn" onclick="triggerPopSound()">🔨 牙籤插破保鮮膜!</button></td></tr>
-                        <tr><td>綠杯可樂</td><td>150</td><td><button class="pop-btn" onclick="triggerPopSound()">🔨 牙籤插破保鮮膜!</button></td></tr>
-                        <tr><td>綠杯冰島水</td><td>100</td><td><button class="pop-btn" onclick="triggerPopSound()">🔨 牙籤插破保鮮膜!</button></td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- 模組 2: 智慧自動售票機與電子車票 Canvas -->
-            <div id="view-vending" class="view-section search-target">
-                <h2 class="section-title"><span id="v-title">135區捷運系統自動售票機</span></h2>
-                <div class="vending-machine">
-                    <div class="form-group">
-                        <label id="lbl-select-line">選擇運行路線 (Select Sub Line):</label>
-                        <select id="ticket-line" onchange="updateTicketStations()">
-                            <option value="MML">民權民生線 (MML) - 已通車 [50~150籌幣]</option>
-                            <option value="YLB">黃燈閃爍線 (YLB) - 未開放 [50~250籌幣]</option>
-                        </select>
-                    </div>
-                    <div class="grid-layout" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                        <div class="form-group">
-                            <label id="lbl-start-st">起點車站 (Origin):</label>
-                            <select id="ticket-from"></select>
-                        </div>
-                        <div class="form-group">
-                            <label id="lbl-end-st">終點車站 (Destination):</label>
-                            <select id="ticket-to"></select>
-                        </div>
-                    </div>
-                    <button onclick="generateElectronicTicket()" style="width:100%; padding:10px; background:var(--accent-mml); color:black; font-weight:bold; border:none; border-radius:4px; cursor:pointer; margin-top:10px;" id="btn-buy-ticket">確認購買並繪製電子防偽乘車票</button>
-                </div>
-
-                <div class="ticket-result-container">
-                    <h3 style="margin-bottom:10px; color:white;" id="lbl-ticket-preview">虛擬票卡即時預覽 (Canvas Render)</h3>
-                    <canvas id="ticketCanvas" width="400" height="200"></canvas>
-                    <p style="font-size:11px; color:#8b949e; margin-top: 5px;" id="canvas-tip">右鍵點擊圖片或長按可保存電子通行證</p>
-                </div>
-            </div>
-
-            <!-- 模組 3: 拼豆工作坊自製成本計算 -->
-            <div id="view-workshop" class="view-section search-target">
-                <h2 class="section-title"><span id="w-title">拼豆創意工作坊 & 壽司製作成本計算器</span></h2>
-                <p id="w-desc">在此點選調色盤顏色，於左側 8x8 矩陣中鋪設方塊，系統將以135區中央批發價即時核算您的作品拼豆總價值！</p>
-                
-                <div class="bead-workshop">
-                    <div class="bead-grid" id="pixel-container">
-                        <!-- 由JS初始化64個圓形拼豆孔 -->
-                    </div>
-                    <div class="bead-palette">
-                        <h4 id="lbl-palette-title">拼豆色卡批發價單價</h4>
-                        <div class="palette-color selected" onclick="selectPaletteColor('#ff4d4d', 'red', 12.5)" id="p-red">
-                            <div class="color-dot" style="background:#ff4d4d"></div> <span>紅色 (鮪魚/紅色方塊) : 12.5 籌幣</span>
-                        </div>
-                        <div class="palette-color" onclick="selectPaletteColor('#ff9433', 'orange', 20)" id="p-orange">
-                            <div class="color-dot" style="background:#ff9433"></div> <span>橘色 (鮭魚/橘色方塊) : 20 籌幣</span>
-                        </div>
-                        <div class="palette-color" onclick="selectPaletteColor('#ffffff', 'white', 10)" id="p-white">
-                            <div class="color-dot" style="background:#ffffff"></div> <span>白色 (魷魚/飯/鹽巴) : 10 籌幣</span>
-                        </div>
-                        <div class="palette-color" onclick="selectPaletteColor('#ff9999', 'pink', 10)" id="p-pink">
-                            <div class="color-dot" style="background:#ff9999"></div> <span>淺粉 (甜蝦肉方塊) : 10 籌幣</span>
-                        </div>
-                        <div class="palette-color" onclick="selectPaletteColor('#2ecc71', 'green', 15)" id="p-green">
-                            <div class="color-dot" style="background:#2ecc71"></div> <span>綠色 (雪碧/蔬菜/茶葉) : 15 籌幣</span>
-                        </div>
-                        <div class="palette-color" onclick="selectPaletteColor('#8e5a32', 'brown', 50)" id="p-brown">
-                            <div class="color-dot" style="background:#8e5a32"></div> <span>咖啡 (牛肉/醬油/黑糖) : 50 籌幣</span>
-                        </div>
-                        <div class="palette-color" onclick="selectPaletteColor('#111111', 'black', 15)" id="p-black">
-                            <div class="color-dot" style="background:#111111"></div> <span>黑色 (海苔方塊) : 15 籌幣</span>
-                        </div>
-
-                        <div style="margin-top:15px; border-top:1px solid var(--border-color); padding-top:10px;">
-                            <h3 style="color:white;"><span id="lbl-total-bead-cost">當前拼豆作品總估價:</span> <span id="bead-total-price" style="color:var(--accent-ylb)">0</span> 籌幣</h3>
-                            <button onclick="clearBeadGrid()" style="margin-top:8px; padding:5px 10px; background:var(--danger); color:white; border:none; border-radius:4px; cursor:pointer;" id="btn-clear-bead">重置畫布</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 模組 4: 國際機場小賣場菜單 -->
-            <div id="view-airport" class="view-section search-target">
-                <h2 class="section-title"><span id="air-title">MML-4 國際機場小賣場商品庫存名冊</span></h2>
-                <p style="font-size:12px; color:#8b949e; margin-bottom:10px;">最後更新日期: 2026/05/04 | 供貨來源: 國際品牌製造出品</p>
-                
-                <table class="menu-table">
-                    <thead><tr><th>物料範疇</th><th>特定品項與包裝方塊規格規格</th><th>單價 (籌幣)</th><th>原產地地區</th></tr></thead>
-                    <tbody>
-                        <tr><td>高端海鮮</td><td>龍蝦 (含 6個蝦肉方塊、1個尾巴方塊)</td><td>110</td><td>135區</td></tr>
-                        <tr><td>高端海鮮</td><td>甜蝦 (含 5個蝦肉方塊、2個尾巴方塊)</td><td>50</td><td>135區</td></tr>
-                        <tr><td>極致肉品</td><td>和牛 (含 4個深咖啡色立體方塊)</td><td>300</td><td>132區</td></tr>
-                        <tr><td>生鮮類</td><td>鮭魚 (含 2個橘色魚肉方塊、2個白色魚肉方塊)</td><td>80</td><td>135區</td></tr>
-                        <tr><td>生鮮類</td><td>魷魚 (含 4個純白魚肉方塊)</td><td>60</td><td>135區</td></tr>
-                        <tr><td>生鮮類</td><td>鮪魚 (含 4個鮮紅魚肉方塊)</td><td>50</td><td>135區</td></tr>
-                        <tr><td>醃漬類</td><td>鮭魚卵 (鹽漬 / 紅色方塊)</td><td>10</td><td>135區</td></tr>
-                        <tr><td>醃漬類</td><td>鮭魚卵 (醬油漬 / 橘色方塊，現貨)</td><td>10</td><td>135區</td></tr>
-                        <tr><td>生鮮類</td><td>鮭魚肚 (5個橘色方塊、1個白魚肉方塊、1個米方塊)</td><td>100</td><td>135區</td></tr>
-                        <tr><td>基礎食材</td><td>海苔 (六個裝 / 黑色方塊)</td><td>90</td><td>130區</td></tr>
-                        <tr><td>基礎調味</td><td>鹽巴 (一個 / 白色方塊)</td><td>1</td><td>135區</td></tr>
-                        <tr><td>基礎調味</td><td>醬油 (一個 / 咖啡色方塊)</td><td>3</td><td>135區</td></tr>
-                        <tr><td>有機農產</td><td>有機蔬菜 (含 2個根部方塊、4個葉片方塊)</td><td>50</td><td>130區</td></tr>
-                        <tr><td>乳製品</td><td>牛奶 (一盒 / 白色方塊)</td><td>5</td><td>132區</td></tr>
-                        <tr><td>五穀澱粉</td><td>麵粉 (一包 / 白色方塊)</td><td>10</td><td>130區</td></tr>
-                        <tr><td>日常肉類</td><td>牛肉 (一條 / 含 6個咖啡色方塊)</td><td>120</td><td>132區</td></tr>
-                        <tr><td>五穀澱粉</td><td>一粒飯 (一個 / 白色方塊)</td><td>10</td><td>130區</td></tr>
-                        <tr><td>基礎澱粉</td><td>樹薯粉 (一個 / 可加工製作粉圓)</td><td>5</td><td>130區</td></tr>
-                        <tr><td>農產加工</td><td>茶葉 (一片 / 含 6個茶葉方塊)</td><td>50</td><td>130區</td></tr>
-                        <tr><td>特殊糖品</td><td>黑糖 (一個 / 永遠特價：20粒10元，倍數相同)</td><td>2</td><td>135區</td></tr>
-                        <tr><td>中等海鮮</td><td>干貝 (一個 / 含 4個白色方塊)</td><td>60</td><td>135區</td></tr>
-                        <tr><td>飲品速食</td><td>雪碧 (一瓶 / 綠色直立 4方塊)</td><td>45</td><td>135區</td></tr>
-                        <tr><td>飲品速食</td><td>可樂 (一瓶 / 紅色直立 4方塊)</td><td>45</td><td>135區</td></tr>
-                        <tr><td>飲品速食</td><td>薯條 (一份 / 含 4紅色方塊 + 6黃色方塊)</td><td>100</td><td>130區</td></tr>
-                        <tr><td>鮮果類</td><td>草莓 (一個 / 下紅上綠方塊)</td><td>50</td><td>130區</td></tr>
-                        <tr><td>鮮果類</td><td>藍莓 (一個 / 下藍上綠方塊)</td><td>50</td><td>130區</td></tr>
-                        <tr><td>鮮果類</td><td>橘子 (一個 / 下橘上綠方塊)</td><td>35</td><td>130區</td></tr>
-                        <tr><td>乳產加工</td><td>起司 (一個 / 5個黃色方塊)</td><td>40</td><td>132區</td></tr>
-                        <tr><td>濃縮醬料</td><td>橘子果醬 (一個 / 5個橘色方塊)</td><td>5</td><td>135區</td></tr>
-                        <tr><td>濃縮醬料</td><td>草莓果醬 (一個 / 5個深粉紅色方塊)</td><td>3</td><td>135區</td></tr>
-                        <tr><td>濃縮醬料</td><td>藍莓醬 (一個 / 深藍色方塊)</td><td>15</td><td>135區</td></tr>
-                        <tr><td>濃縮醬料</td><td>起司醬 (一個 / 淺黃色方塊)</td><td>1</td><td>135區</td></tr>
-                        <tr><td>烘焙類</td><td>風味麵包 (藍莓 / 草莓 / 起司 / 橘子均一價)</td><td>3</td><td>130區</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- 模組 5: 水利電力財政計算機 -->
-            <div id="view-utility" class="view-section search-target">
-                <h2 class="section-title"><span id="ut-title">135區公共水電開銷與法定外幣更換計算機</span></h2>
-                
-                <div class="calc-box">
-                    <h3 style="color:white; margin-bottom:8px;" id="ut-sub1">💧 基礎水電開支試算 (135區標準)</h3>
-                    <p style="font-size:12px; margin-bottom:8px;">計費規約：1杯水(100ml) = 50元籌幣 | 1分鐘電力 = 50元籌幣</p>
-                    <div class="grid-layout" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                        <div class="form-group">
-                            <label>輸入預計用水量 (ml):</label>
-                            <input type="number" id="calc-water" value="100" oninput="performUtilityCalc()">
-                        </div>
-                        <div class="form-group">
-                            <label>輸入預計用電時間 (分鐘):</label>
-                            <input type="number" id="calc-electric" value="1" oninput="performUtilityCalc()">
-                        </div>
-                    </div>
-                    <p style="font-weight:bold; color:var(--accent-ylb); margin-top:5px;">預估水電總應付賬單: <span id="res-utility">100</span> 籌幣</p>
-                </div>
-
-                <div class="calc-box" style="margin-top:15px;">
-                    <h3 style="color:white; margin-bottom:8px;" id="ut-sub2">🪙 中央銀行法定外幣外匯更換中心</h3>
-                    <p style="font-size:12px; margin-bottom:8px;">官方固定匯率：1 新台幣 (TWD) = 200 籌幣 = 400 林幣 (系統採四捨五入算至各位數)</p>
-                    <div class="form-group">
-                        <label>輸入要更換的新台幣面額 (TWD):</label>
-                        <input type="number" id="calc-twd" value="1" oninput="performCurrencyCalc()">
-                    </div>
-                    <div style="background:#0d1117; padding:10px; border-radius:4px; font-size:13px;">
-                        <div>🔹 可向櫃檯兌換 <b>籌幣 (Principal Currency)</b>: <span id="res-chou" style="color:var(--accent-mml)">200</span> 籌幣</div>
-                        <div style="margin-top:4px;">🔹 可向櫃檯兌換 <b>林幣 (Sub Currency)</b>: <span id="res-lin" style="color:var(--accent-ylb)">400</span> 林幣</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 模組 6: 135區核心法規 -->
-            <div id="view-laws" class="view-section search-target">
-                <h2 class="section-title"><span id="law-title">135特區最高憲章與營運宗旨</span></h2>
-                <div style="background:#1f242c; padding:15px; border-radius:6px; display:flex; flex-direction:column; gap:12px;">
-                    <p><b>第一條 行動約束：</b> 車站與車站之間的長途移動「唯一合法途徑」為搭乘捷運電車。因遊戲未鋪設站外行人道路，全體玩家禁止脫離捷運月台內部範圍走入未開發平原。</p>
-                    <p><b>第二條 智能防線：</b> 嚴格禁止協作AI擅自竄改、扭曲本特區資料庫之核心價格、規格數據，必須完全忠於設計原稿。</p>
-                    <p><b>第三條 終極和平：</b> 本法核心框架旨在維持良好的特區規矩、不破壞他人建築與資產、追求世界和平共處共榮。</p>
-                    <p><b>第四條 語音修正義務：</b> 鑑於大掃除後原版丟失，由六年級11歲之創作者兼總工程師「拉不拉斯」進行重製。若語音輸入系統導致站名文字產生同音注音錯字，AI有絕對義務在載入前自動偵測並予以更正！</p>
-                    <div style="border-top:1px solid #333; padding-top:10px; margin-top:5px;">
-                        <span style="color:var(--accent-ylb); font-weight:bold;">🏆 特區終極生存目標：</span>
-                        <p>全體居民只要努力拓展產業、累積賺取達到 <b>100兆籌幣</b>，即可直接獲得由「中正公司」親自頒發的特選普通員工證照！取得證照者將合法晉升，擁有親自駕駛電車、參與特區高層政務、與調閱更核心檔案的最高榮譽特權！</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 模組 7: 靜態網頁自由放新聞專區 -->
-            <div id="view-news" class="view-section search-target">
-                <h2 class="section-title"><span id="news-section-title">135區中央新聞廣播中心</span></h2>
-                <p style="font-size:12px; color:#8b949e; margin-bottom:15px;">此處為靜態網頁廣播插槽。幕後工程師若要增補新聞，可在下方管理專區輸入內容，系統會自動排版並渲染，同時吐出永久代碼供您貼回源檔案！</p>
-                
-                <div class="news-container" id="news-wall">
-                    <!-- NEWS_SLOT_START -->
-                    <div class="news-card">
-                        <div class="news-meta"><span>📅 2026/06/04</span> <span style="color:var(--accent-ylb)">[重大公告]</span></div>
-                        <div class="news-title">拉不拉斯重製版 V12 伺服器正式開機註冊！</div>
-                        <div class="news-body">大家期待已久的重製版本正式上線！因創作者學業與生活繁忙，原版檔案於大掃除中遺失。新版本全面規劃完工，開放註冊即發放新手補貼 1000 籌幣，歡迎全體玩家搭乘捷運前來馬姆基地消費拼豆藝術品！</div>
-                    </div>
-                    <!-- NEWS_SLOT_END -->
-                </div>
-
-                <!-- 幕後工程發新聞管理台 -->
-                <div class="admin-box">
-                    <h3 id="admin-panel-title">🛠️ 總工程師專用新聞發布管理台</h3>
-                    <div class="form-group">
-                        <label>發布日期 (Date):</label>
-                        <input type="text" id="adm-date" value="2026/07/15">
-                    </div>
-                    <div class="form-group">
-                        <label>新聞標題 (Title):</label>
-                        <input type="text" id="adm-title" placeholder="請輸入重要新聞標題...">
-                    </div>
-                    <div class="form-group">
-                        <label>新聞主要內容 (Content):</label>
-                        <textarea id="adm-body" rows="4" placeholder="請在此輸入詳細的新聞播報事件內文..."></textarea>
-                    </div>
-                    <button onclick="publishNewsNode()" id="btn-publish">確認美化排版並置頂投入新聞牆</button>
-                    
-                    <div class="code-output" id="adm-output-code"></div>
-                </div>
-            </div>
-
-            <!-- 車站動態詳情跳轉區 (Single Page Detail Views) -->
-            <!-- MML-1 -->
-            <div id="st-mml1" class="view-section search-target">
-                <h2 class="section-title">🚉 MML-1 / YLB-1 馬姆基地 (Mamu Base)</h2>
-                <p><b>成立年份：</b> 2016年6月20日成立，為本遊戲最古老也最具歷史價值的核心起點車站。</p>
-                <p><b>中央ATM服務：</b> 支援玩家進行存款、取款、儲值、以及外幣更換。本特區遊戲伺服器於 <b>2026年6月4日下午4點50分</b> 正式對全球開放註冊，凡至本站ATM完成註冊之新進玩家，皆可免費提領新手贈禮 1000$ 籌幣！</p>
-                <h4 style="margin-top:10px; color:white;">🏪 月台店鋪招租狀態：</h4>
-                <ul>
-                    <li>月台內店鋪（大）：租金每週 6000 籌幣。 <span style="color:var(--danger)">[目前政策：不開放]</span></li>
-                    <li>月台外店鋪（小）：租金每週 2600 籌幣。 <span style="color:var(--success)">[目前政策：開放招租中]</span></li>
-                </ul>
-                <p><b>地下秘道聯通：</b> 本站內設有唯一的全封閉走路專用安全地道，可以直接步行聯通到鄰近的 MML-2 鋼琴站。</p>
-            </div>
-
-            <!-- MML-2 -->
-            <div id="st-mml2" class="view-section search-target">
-                <h2 class="section-title">🚉 MML-2 鋼琴站 (Piano Station)</h2>
-                <p><b>地理位置：</b> 可透過唯一的合法地下步行通道，安全聯通至馬姆基地總站。</p>
-                <h3 style="color:var(--accent-mml); margin-top:10px;">🎼 國家音樂廳 (National Concert Hall)</h3>
-                <p><b>演奏機制：</b> 歡迎一般民眾、旅行藝術家前來自性登台演奏，可自由獲得台下觀眾打賞的豐厚酬金。</p>
-                <p><b>整點音樂會：</b> 於真實世界每逢「整點」時間，將會不定期開始演奏大型高雅交響曲。具體曲目完全按照當天預先排定的音樂節目表進行廣播。</p>
-                <p><b>音樂會票價：</b> 欣賞一次普通席位門票均一價為 <b>5000 籌幣</b>，每場音樂會的完整精采演出時間主要落在 2 分鐘到 20 分鐘之間不等。</p>
-            </div>
-
-            <!-- MML-3 (Collapsed, handled via safety alert) -->
-            <div id="st-mml3" class="view-section search-target">
-                <h2 class="section-title" style="color:var(--danger)">⚠️ MML-3 運杏安和 (UNFORTUNATE COLLAPSE)</h2>
-                <div class="alert-banner">
-                    <h3>【特區緊急停運與封鎖通告】</h3>
-                    <p>因日前遭遇突發性不可抗力重大事件，該站內由於食品堆疊過多，意外發生毀滅性倒塌掩埋事故！目前整座車站主體結構均被深埋於廢墟之中。為了保障全體旅客生命安全，本站目前「全面關閉、不予開放」，列車將全速通過。站內的所有ATM金融儲值服務也已宣告全面暫停，請玩家切勿靠近！</p>
-                </div>
-            </div>
-
-            <!-- MML-4 -->
-            <div id="st-mml4" class="view-section search-target">
-                <h2 class="section-title">🚉 MML-4 / YLB-3 國際機場站 (International Airport)</h2>
-                <p><b>特區店鋪招租租賃：</b> 本站現正全面開放兩個標準出租店鋪，主要招商基本租金為 <b>每週 9000 籌幣</b>，歡迎各路商家進駐。</p>
-                <p><b>機場服務櫃檯：</b> 車站大廳櫃檯提供常規的買票、補票、線路異常查詢等綜合業務。但注意，目前前往 132 區的飛機航班與機場通道暫時不開放，機票定價也處於「#未開放#」狀態。</p>
-                <p><b>小賣場專區：</b> 本站內常駐國際供貨商出品之小賣場，完整食材與拼豆物料細節已整合進左側「國際機場小賣場」獨立檔案庫中，可前往查閱。</p>
-            </div>
-
-            <!-- MML-5 -->
-            <div id="st-mml5" class="view-section search-target">
-                <h2 class="section-title">🚉 MML-5 婆不基地 (Pobu Base)</h2>
-                <p><b>交通戰略樞紐位置：</b> 本站為135區極重要的多線路轉乘交會大站。在此可合法直接由民權民生線 (MML) 下車，並轉乘前往著名的 <b>「台雄線」</b> 與 <b>「美東線」</b> 電車鐵道網絡。</p>
-            </div>
-
-            <!-- MML-6 -->
-            <div id="st-mml6" class="view-section search-target">
-                <h2 class="section-title">🚉 MML-6 / YLB-4 世朗站 (Shilang Station)</h2>
-                <h3 style="color:var(--accent-mml);">🚰 特區指定取水站</h3>
-                <p><b>取水站官方價目表：</b> 每購買 100 毫升 (ml) 清潔純淨水源，規費為 <b>10 籌幣</b>。中央水利特別優惠：凡單次購買滿 1000ml 者，即刻加碼免費贈送 100ml 水源！</p>
-                <p><b>民眾自由烹飪區：</b> 現階段尚處於「#未完工#」之狀態。</p>
-                <p><b>冰箱廣告位置招租：</b> 車站月台左側冰箱與右側冰箱之黃金廣告宣傳位對外招租，每個月月租金為 <b>5000 籌幣</b>。</p>
-            </div>
-
-            <!-- MML-7 -->
-            <div id="st-mml7" class="view-section search-target">
-                <h2 class="section-title">🚉 MML-7 / YLB-4 充電3C站 (3C Charging Station)</h2>
-                <p><b>免費福利：</b> 本站大廳與候車區全面提供玩家高功率數位裝置免費充電服務。</p>
-                <h3 style="color:var(--accent-mml);">🎙️ 特區中央廣播室 (Broadcasting Room)</h3>
-                <p><b>點播機制：</b> 任何民眾只要支付 <b>800 籌幣</b> 的廣播專用規費，即可獲得主控權，自由挑選播放您喜愛的特區背景配樂與宣告。該點播曲目將會持續循環播放，直到下一位玩家前來付費更改曲目為止。</p>
-            </div>
-
-            <!-- MML-8 -->
-            <div id="st-mml8" class="view-section search-target">
-                <h2 class="section-title">🚉 MML-8 麻木基地 (Mabu Base)</h2>
-                <p><b>技術領先：</b> 本車站的自動化與硬體建構評級，為全135區中「第二先進」的現代化高等車站。</p>
-                
-                <h3 style="color:var(--accent-mml); margin-top:10px;">🖨️ 天字印刷廠</h3>
-                <p><b>服務價目表：</b>
-                    <br>• 黑白文件影印：1000 籌幣 / 張
-                    <br>• 彩色豪華影印：5000 籌幣 / 張
-                    <br>• 相片或通行證護貝：1000 籌幣 / 張
-                    <br>• 裁切服務：現場人工代客裁切（通行證一天使用費 100 籌幣），或可選擇直接購買一台專業裁紙機返家使用，售價 16000 籌幣。
-                </p>
-
-                <h3 style="color:var(--accent-mml); margin-top:10px;">🐟 麻木基地海鮮市場 (海市)</h3>
-                <p><b>基本資訊：</b> 專營純天然海鮮批發。地點位於：台灣高雄市美濃區135-麻木基地。每日營業時間為 07:40 至 18:15。</p>
-                <p><b>海市完整詳細販賣項目與拼豆圖列規格：</b></p>
-                <table class="menu-table">
-                    <thead><tr><th>海鮮品項名稱</th><th>單價 (籌幣)</th><th>拼豆方塊與劑量圖列規格</th></tr></thead>
-                    <tbody>
-                        <tr><td>鮭魚 (一條)</td><td>50</td><td>包含 2個橘色方塊 + 2個白色方塊</td></tr>
-                        <tr><td>鮭魚卵 (一顆)</td><td>10</td><td>紅色方塊 (使用鹽巴紅色或醬油咖啡色基底)</td></tr>
-                        <tr><td>蝶豆花 (10毫升)</td><td>5</td><td>包含 4個綠色方塊 (註: 10ml = 1個拼豆方塊)</td></tr>
-                        <tr><td>魷魚 (一條)</td><td>30</td><td>包含 4個純白色方塊</td></tr>
-                        <tr><td>章魚腳 (單隻)</td><td>15</td><td>兩隻享特價 20 籌幣！顏色為深紅色 (紅酒色)</td></tr>
-                        <tr><td>天然海鹽 (10公克)</td><td>5</td><td>純白色方塊 (註: 10g = 1個拼豆方塊)</td></tr>
-                        <tr><td>醬油 (10毫升)</td><td>5</td><td>咖啡色方塊</td></tr>
-                        <tr><td>蝦子 (一條)</td><td>10</td><td>包含 1個紅色尾巴方塊 + 4個淺粉色方塊</td></tr>
-                        <tr><td>蟹螯 (一隻)</td><td>1000</td><td>極稀有高端物料</td></tr>
-                        <tr><td>蟹腳 (一隻)</td><td>200</td><td>高端物料</td></tr>
-                        <tr><td>海底天然氣 (100ml)</td><td>500</td><td>外觀透明，可維持燃燒加熱 100 秒</td></tr>
-                        <tr><td>龍蝦 (一條)</td><td>90</td><td>包含 1個紅色尾巴方塊 + 6個純蝦肉方塊</td></tr>
-                        <tr><td>鮪魚 (一條)</td><td>40</td><td>包含 4個鮮紅色方塊</td></tr>
-                        <tr><td>海帶 (一條)</td><td>綠20 / 紫30</td><td>可選綠色或紫色拼豆方塊</td></tr>
-                        <tr><td>干貝 (一個)</td><td>70</td><td>包含 4個純白色方塊</td></tr>
-                    </tbody>
-                </table>
-
-                <h3 style="color:var(--accent-ylb); margin-top:10px;">🏨 信義飯店 (Xinyi Hotel)</h3>
-                <p><b>飯店簡介：</b> 不要懷疑！這就是本區最豪華的旗艦飯店。入住費用採四捨五入概算，<b>每週收取 10000 籌幣</b>。該價格已全額包辦水電費，可无限量使用水電資源，但唯一缺點是目前暫時沒有供應熱水。 <span style="color:var(--danger)">[重要備註：目前因重製版調校中，暫不開放]</span></p>
-            </div>
-
+        <div class="flex items-center gap-2 bg-gray-800 p-1.5 rounded-lg border border-gray-700">
+            <span class="text-xs text-gray-300 px-2 font-bold">🖥️ 裝置預覽設定：</span>
+            <button onclick="setDevice('pc')" id="btn-pc" class="px-3 py-1 bg-blue-600 text-white rounded text-xs font-bold transition">電腦版</button>
+            <button onclick="setDevice('tablet')" id="btn-tablet" class="px-3 py-1 bg-gray-700 text-gray-300 rounded text-xs font-bold transition">平板版</button>
+            <button onclick="setDevice('iphone-l')" id="btn-iphone" class="px-3 py-1 bg-gray-700 text-gray-300 rounded text-xs font-bold transition">iPhone橫向</button>
+            <button onclick="setDevice('mobile')" id="btn-mobile" class="px-3 py-1 bg-gray-700 text-gray-300 rounded text-xs font-bold transition">手機直向</button>
         </div>
     </div>
 
-    <!-- 核心運算與互動邏輯引擎指令腳本 -->
-    <script>
-        // 伺服器啟動基礎錨點：2026年6月4日 下午 4:50
-        const SERVER_START_TIME = new Date("2026-06-04T16:50:00").getTime();
+    <!-- Main Container -->
+    <div id="device-wrapper" class="device-pc mx-auto bg-gray-950 p-6 rounded-2xl border border-gray-800 shadow-2xl transition-all duration-300">
         
-        // 語言數據字典庫
-        const i18n = {
-            zh_tw: {
-                title: "妹目壽司 中央數據運作資料庫 V12 重製版",
-                real_elapsed: "真實世界總運行時間 (Real Elapsed)",
-                game_env: "遊戲環境狀態 (Environment)",
-                game_date: "遊戲專用曆法時間 (Game Calendar)",
-                countdown: "週期流逝倒數 (Cycle Countdown)",
-                day: "🌞 白天 (Daytime)",
-                night: "🌙 黑夜 (Nighttime)",
-                st_title: "135區車站聯通網絡",
-                core_title: "核心系統中央模組",
-                search_holder: "🔍 輸入關鍵字智慧搜尋... (支援搜尋產地、拼豆方塊顏色、車站、金額，系統將即時交叉高亮顯示)"
+        <!-- Header Banner with Logo -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 bg-gradient-to-r from-blue-900/40 via-yellow-950/20 to-blue-900/40 p-6 rounded-2xl border border-gray-800">
+            <div class="flex items-center gap-4">
+                <!-- CSS Based Round Logo -->
+                <div class="w-24 h-24 bg-yellow-400 rounded-full flex flex-col justify-center items-center shadow-lg text-black font-black relative shrink-0">
+                    <span class="text-3xl leading-none font-sans">C</span>
+                    <span class="text-xs border-b border-black font-sans absolute top-5 right-5 leading-none">MRT</span>
+                    <span class="text-2xl leading-none absolute bottom-4 left-5 font-mono">Ż</span>
+                    <span class="text-lg leading-none absolute bottom-5 right-6">𝜙</span>
+                    <span class="text-[9px] absolute bottom-3 right-4 font-bold">正</span>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black text-white">歡迎來到妹目壽司！</h2>
+                    <p class="text-sm text-yellow-400 font-bold">11歲拉不拉斯原創研發・真實世界角色扮演</p>
+                    <p class="text-xs text-gray-400 mt-1">※大掃除重啟！V13 版電車全新規劃、黃燈閃爍線復活！</p>
+                </div>
+            </div>
+            
+            <!-- Time System & Weather System -->
+            <div class="bg-gray-900/80 p-4 rounded-xl border border-gray-800 flex flex-col justify-between">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-gray-400">⏱️ 伺服器時間引擎</span>
+                    <span id="day-night-indicator" class="text-xs px-2 py-0.5 rounded-full font-bold bg-yellow-500/20 text-yellow-400">白天</span>
+                </div>
+                <div class="my-2">
+                    <div class="text-lg font-mono text-white font-bold" id="server-time-display">載入中...</div>
+                    <div class="text-[11px] text-gray-400 mt-0.5" id="server-calc-detail">（實時計算中...）</div>
+                </div>
+                <div class="text-xs text-blue-400 font-bold flex justify-between">
+                    <span>🌦️ 氣候系統: 穩定</span>
+                    <span>1天 = 20分 | 3天 = 1週期</span>
+                </div>
+            </div>
+
+            <!-- Multi-Currency Exchange Converter -->
+            <div class="bg-gray-900/80 p-4 rounded-xl border border-gray-800 flex flex-col justify-between">
+                <span class="text-xs font-bold text-gray-400 mb-2">💱 官方外匯兌換處 (1 TWD = 200 籌幣 = 400 林幣)</span>
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="text-[10px] text-gray-400 block">新台幣 (NTD)</label>
+                        <input type="number" id="conv-ntd" oninput="convertCurrency('ntd')" value="5" class="w-full bg-gray-800 text-white border border-gray-700 rounded px-2 py-1 text-sm font-mono text-center">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-yellow-400 block">籌幣 (Main)</label>
+                        <input type="number" id="conv-chou" oninput="convertCurrency('chou')" value="1000" class="w-full bg-gray-800 text-yellow-400 border border-gray-700 rounded px-2 py-1 text-sm font-mono text-center">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-emerald-400 block">林幣 (Lin)</label>
+                        <input type="number" id="conv-lin" oninput="convertCurrency('lin')" value="2000" class="w-full bg-gray-800 text-emerald-400 border border-gray-700 rounded px-2 py-1 text-sm font-mono text-center">
+                    </div>
+                </div>
+                <div class="text-[10px] text-gray-500 text-right mt-1">※自動四捨五入計算 | 遊戲主要使用「籌幣」</div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex flex-wrap gap-2 border-b border-gray-800 pb-4 mb-6">
+            <button onclick="switchTab('tab-stations')" id="btn-tab-stations" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold text-sm transition">🚇 車站與店鋪 (MML/YLB)</button>
+            <button onclick="switchTab('tab-tickets')" id="btn-tab-tickets" class="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg font-bold text-sm transition">🎟️ 電車/航線票價算</button>
+            <button onclick="switchTab('tab-menu')" id="btn-tab-menu" class="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg font-bold text-sm transition">🍣 妹目壽司菜單</button>
+            <button onclick="switchTab('tab-utilities')" id="btn-tab-utilities" class="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg font-bold text-sm transition">⚡ 135/132水電費計算</button>
+            <button onclick="switchTab('tab-sponsors')" id="btn-tab-sponsors" class="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg font-bold text-sm transition">👑 玩家與贊助名單</button>
+            <button onclick="switchTab('tab-games')" id="btn-tab-games" class="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg font-bold text-sm transition">🎮 拼豆小遊戲</button>
+        </div>
+
+        <!-- TAB: Stations Detailed View -->
+        <div id="tab-stations" class="tab-content">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Left Station Menu -->
+                <div class="bg-gray-900 p-4 rounded-xl border border-gray-800 h-[600px] overflow-y-auto">
+                    <h3 class="font-bold text-sm text-gray-400 mb-3 uppercase tracking-wider">MML 民權民生線車站</h3>
+                    <div class="space-y-1">
+                        <button onclick="selectStation('MML-1')" class="w-full text-left px-3 py-2 bg-blue-950/40 hover:bg-blue-900/60 border border-blue-900 rounded text-xs text-white flex justify-between">
+                            <span>MML-1 馬姆基地</span><span class="text-blue-400">● 營運</span>
+                        </button>
+                        <button onclick="selectStation('MML-2')" class="w-full text-left px-3 py-2 bg-blue-950/40 hover:bg-blue-900/60 border border-blue-900 rounded text-xs text-white flex justify-between">
+                            <span>MML-2 鋼琴站</span><span class="text-blue-400">● 營運</span>
+                        </button>
+                        <button onclick="selectStation('MML-3')" class="w-full text-left px-3 py-2 bg-red-950/20 hover:bg-red-900/30 border border-red-900/50 rounded text-xs text-red-400 flex justify-between">
+                            <span>MML-3 運杏安和</span><span class="text-red-500">✖ 停運</span>
+                        </button>
+                        <button onclick="selectStation('MML-4')" class="w-full text-left px-3 py-2 bg-blue-950/40 hover:bg-blue-900/60 border border-blue-900 rounded text-xs text-white flex justify-between">
+                            <span>MML-4 國際機場站</span><span class="text-blue-400">● 營運</span>
+                        </button>
+                        <button onclick="selectStation('MML-5')" class="w-full text-left px-3 py-2 bg-blue-950/40 hover:bg-blue-900/60 border border-blue-900 rounded text-xs text-white flex justify-between">
+                            <span>MML-5 婆不基地</span><span class="text-blue-400">● 轉乘</span>
+                        </button>
+                        <button onclick="selectStation('MML-6')" class="w-full text-left px-3 py-2 bg-blue-950/40 hover:bg-blue-900/60 border border-blue-900 rounded text-xs text-white flex justify-between">
+                            <span>MML-6 世朗站</span><span class="text-blue-400">● 營運</span>
+                        </button>
+                        <button onclick="selectStation('MML-7')" class="w-full text-left px-3 py-2 bg-blue-950/40 hover:bg-blue-900/60 border border-blue-900 rounded text-xs text-white flex justify-between">
+                            <span>MML-7 充電3C站</span><span class="text-blue-400">● 營運</span>
+                        </button>
+                        <button onclick="selectStation('MML-8')" class="w-full text-left px-3 py-2 bg-blue-950/40 hover:bg-blue-900/60 border border-blue-900 rounded text-xs text-white flex justify-between">
+                            <span>MML-8 麻木基地</span><span class="text-blue-400">● 營運</span>
+                        </button>
+                        <button onclick="selectStation('MML-9')" class="w-full text-left px-3 py-2 bg-blue-950/40 hover:bg-blue-900/60 border border-blue-900 rounded text-xs text-white flex justify-between">
+                            <span>MML-9 信義飯店</span><span class="text-blue-400">● 營運</span>
+                        </button>
+                    </div>
+
+                    <h3 class="font-bold text-sm text-gray-400 mt-6 mb-3 uppercase tracking-wider">YLB 黃燈閃爍線車站</h3>
+                    <div class="space-y-1">
+                        <button onclick="selectStation('YLB-1')" class="w-full text-left px-3 py-2 bg-yellow-950/40 hover:bg-yellow-900/40 border border-yellow-800 rounded text-xs text-white flex justify-between">
+                            <span>YLB-1 馬姆基地</span><span class="text-yellow-400">● 營運</span>
+                        </button>
+                        <button onclick="selectStation('YLB-2')" class="w-full text-left px-3 py-2 bg-yellow-950/40 hover:bg-yellow-900/40 border border-yellow-800 rounded text-xs text-white flex justify-between">
+                            <span>YLB-2 充電3C</span><span class="text-yellow-400">● 營運</span>
+                        </button>
+                        <button onclick="selectStation('YLB-3')" class="w-full text-left px-3 py-2 bg-yellow-950/40 hover:bg-yellow-900/40 border border-yellow-800 rounded text-xs text-white flex justify-between">
+                            <span>YLB-3 國際機場</span><span class="text-yellow-400">● 營運</span>
+                        </button>
+                        <button onclick="selectStation('YLB-4')" class="w-full text-left px-3 py-2 bg-yellow-950/40 hover:bg-yellow-900/40 border border-yellow-800 rounded text-xs text-white flex justify-between">
+                            <span>YLB-4 世朗</span><span class="text-yellow-400">● 營運</span>
+                        </button>
+                        <button onclick="selectStation('YLB-5')" class="w-full text-left px-3 py-2 bg-yellow-950/40 hover:bg-yellow-900/40 border border-yellow-800 rounded text-xs text-white flex justify-between">
+                            <span>YLB-5 信義飯店</span><span class="text-yellow-400">● 營運</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Detailed Dashboard -->
+                <div class="col-span-1 md:col-span-3 bg-gray-900 p-6 rounded-xl border border-gray-800 h-[600px] overflow-y-auto" id="station-details-container">
+                    <div class="flex flex-col items-center justify-center h-full text-center text-gray-500">
+                        <span class="text-5xl mb-4">🚇</span>
+                        <h4 class="text-lg font-bold text-gray-400">請在左側選單選擇一個車站</h4>
+                        <p class="text-xs">查看專屬功能、ATM儲值、音樂演奏，以及店鋪營運計算器。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Ticket Calculator -->
+        <div id="tab-tickets" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Left Control Panel -->
+                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-lg font-bold text-white mb-4 border-b border-gray-800 pb-2">🎟️ 車站票價計算與生成系統</h3>
+                    
+                    <div class="mb-6 bg-blue-950/20 p-4 rounded-lg border border-blue-900">
+                        <h4 class="text-sm font-bold text-blue-400 mb-2">民權民生線 (MML) 票價</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs text-gray-400 block mb-1">起點站</label>
+                                <select id="mml-start" onchange="calculateMmlTicket()" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-white">
+                                    <option value="MML-01">MML-01 馬姆基地</option>
+                                    <option value="MML-02">MML-02 鋼琴站</option>
+                                    <option value="MML-03">MML-03 運杏安和</option>
+                                    <option value="MML-04">MML-04 國際機場站</option>
+                                    <option value="MML-05">MML-05 婆不基地</option>
+                                    <option value="MML-06">MML-06 世朗站</option>
+                                    <option value="MML-07">MML-07 充電3C站</option>
+                                    <option value="MML-08">MML-08 麻木基地</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 block mb-1">終點站</label>
+                                <select id="mml-end" onchange="calculateMmlTicket()" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-white">
+                                    <option value="MML-02" selected>MML-02 鋼琴站</option>
+                                    <option value="MML-01">MML-01 馬姆基地</option>
+                                    <option value="MML-03">MML-03 運杏安和</option>
+                                    <option value="MML-04">MML-04 國際機場站</option>
+                                    <option value="MML-05">MML-05 婆不基地</option>
+                                    <option value="MML-06">MML-06 世朗站</option>
+                                    <option value="MML-07">MML-07 充電3C站</option>
+                                    <option value="MML-08">MML-08 麻木基地</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center bg-gray-900 p-2.5 rounded border border-gray-800">
+                            <span class="text-xs text-gray-400">系統試算票價：</span>
+                            <span class="text-lg font-mono font-bold text-blue-400" id="mml-fare-result">50 籌幣</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-6 bg-yellow-950/20 p-4 rounded-lg border border-yellow-800">
+                        <h4 class="text-sm font-bold text-yellow-400 mb-2">黃燈閃爍線 (YLB) 票價</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs text-gray-400 block mb-1">起點站</label>
+                                <select id="ylb-start" onchange="calculateYlbTicket()" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-white">
+                                    <option value="YLB-01">YLB-01 馬姆基地</option>
+                                    <option value="YLB-02">YLB-02 充電3C</option>
+                                    <option value="YLB-03">YLB-03 國際機場</option>
+                                    <option value="YLB-04">YLB-04 世朗</option>
+                                    <option value="YLB-05">YLB-05 信義飯店</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 block mb-1">終點站</label>
+                                <select id="ylb-end" onchange="calculateYlbTicket()" class="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-white">
+                                    <option value="YLB-02" selected>YLB-02 充電3C</option>
+                                    <option value="YLB-01">YLB-01 馬姆基地</option>
+                                    <option value="YLB-03">YLB-03 國際機場</option>
+                                    <option value="YLB-04">YLB-04 世朗</option>
+                                    <option value="YLB-05">YLB-05 信義飯店</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center bg-gray-900 p-2.5 rounded border border-gray-800">
+                            <span class="text-xs text-gray-400">系統試算票價：</span>
+                            <span class="text-lg font-mono font-bold text-yellow-400" id="ylb-fare-result">100 籌幣</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-950/20 p-4 rounded-lg border border-red-900">
+                        <h4 class="text-sm font-bold text-red-400 mb-2">✈️ 林航・跨區國際航線 (國際機場 ⇄ 中正機場)</h4>
+                        <div class="flex justify-between items-center bg-gray-900 p-3 rounded border border-gray-800">
+                            <div>
+                                <p class="text-xs text-gray-400">單程票：250 籌幣 | 來回票：500 籌幣</p>
+                                <p class="text-[10px] text-gray-500">※林航客服專線：07-6818-979</p>
+                            </div>
+                            <button onclick="generateFlightTicket()" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-3 py-1.5 rounded transition">模擬購票</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Ticket Visual Card -->
+                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 flex flex-col justify-between items-center min-h-[400px]">
+                    <h4 class="text-xs text-gray-400 self-start uppercase tracking-wider">電子車票實體預覽 (Canvas 動態印製)</h4>
+                    
+                    <!-- HTML-Rendered Ticket Widget -->
+                    <div id="ticket-mockup" class="w-full max-w-sm bg-blue-600 rounded-lg p-4 text-white shadow-lg relative border-2 border-dashed border-white/50 my-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider" id="ticket-line-badge">MML-民權民生線</span>
+                            <span class="text-xs font-mono">ID: MM-2026-V13</span>
+                        </div>
+                        <div class="border-y border-white/20 py-4 my-2 text-center">
+                            <div class="text-3xl font-black" id="ticket-fare-badge">50 籌幣</div>
+                            <p class="text-xs text-white/80 mt-1" id="ticket-station-flow">馬姆基地 ➔ 鋼琴站</p>
+                        </div>
+                        <div class="text-[10px] text-white/70 space-y-0.5">
+                            <p>1. 本車票用於民權民生捷運，如果車票丟失，無法補辦。</p>
+                            <p>2. 本車票僅限於限值範圍區間內使用。</p>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-gray-500 text-center">※點擊左側「試算票價」可立即重新生成對應票價與圖樣</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Meimu Sushi Official Menu -->
+        <div id="tab-menu" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Menu Shopping Simulator -->
+                <div class="lg:col-span-2 bg-gray-900 p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-lg font-bold text-yellow-400 mb-4 flex justify-between items-center">
+                        <span>🍣 妹目壽司 - 拼豆創意菜單</span>
+                        <span class="text-xs text-gray-400 font-normal">地址：馬姆基地</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-[500px] overflow-y-auto pr-2" id="sushi-menu-grid">
+                        <!-- Filled by JS dynamically -->
+                    </div>
+                </div>
+
+                <!-- Shopping Cart & Checkout -->
+                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 flex flex-col justify-between h-[560px]">
+                    <div>
+                        <h4 class="font-bold text-white border-b border-gray-800 pb-2 mb-4">🛒 本店顧客點餐明細</h4>
+                        <div id="cart-items" class="space-y-2 h-[340px] overflow-y-auto text-xs pr-2">
+                            <!-- Selected items list -->
+                            <div class="text-center text-gray-500 py-10">購物車目前空空如也</div>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-800 pt-4">
+                        <div class="flex justify-between items-center text-sm mb-4">
+                            <span class="text-gray-400">合計費用：</span>
+                            <span class="text-xl font-mono font-bold text-yellow-400" id="cart-total">0 籌幣</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="clearCart()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold py-2 rounded text-xs transition">清空點餐</button>
+                            <button onclick="checkoutCart()" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded text-xs transition">送出廚房製作</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Utility Calculator -->
+        <div id="tab-utilities" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto bg-gray-900 p-6 rounded-xl border border-gray-800">
+                <h3 class="text-lg font-bold text-white mb-6 border-b border-gray-800 pb-2">⚡ 135/132雙特區水電費計算機</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- Area Selector -->
+                    <div class="bg-gray-950 p-5 rounded-lg border border-gray-800">
+                        <h4 class="text-sm font-bold text-gray-300 mb-3">📍 選擇目前所在區域</h4>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex flex-col items-center justify-center p-3 bg-blue-950/20 border border-blue-900 rounded-lg cursor-pointer hover:bg-blue-900/30 transition">
+                                <input type="radio" name="util-area" value="135" checked onchange="updateUtilityRate()" class="mb-2">
+                                <span class="font-bold text-blue-400">135區 (平坦)</span>
+                                <span class="text-[10px] text-gray-400 mt-1">水50 / 電50</span>
+                            </label>
+                            <label class="flex flex-col items-center justify-center p-3 bg-orange-950/20 border border-orange-900 rounded-lg cursor-pointer hover:bg-orange-900/30 transition">
+                                <input type="radio" name="util-area" value="132" onchange="updateUtilityRate()" class="mb-2">
+                                <span class="font-bold text-orange-400">132區 (起伏)</span>
+                                <span class="text-[10px] text-gray-400 mt-1">水150 / 電200</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Input Parameters -->
+                    <div class="bg-gray-950 p-5 rounded-lg border border-gray-800 space-y-4">
+                        <h4 class="text-sm font-bold text-gray-300">📊 輸入消耗資源數據</h4>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <label class="text-xs text-gray-400">用水量 (以杯計算, 1杯 = 100ml)</label>
+                                <span class="text-xs text-gray-400" id="water-ml-display">0 ml</span>
+                            </div>
+                            <input type="number" id="util-water" min="0" value="1" oninput="calculateUtilities()" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm text-white font-mono">
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <label class="text-xs text-gray-400">用電時間 (以分鐘計算)</label>
+                                <span class="text-xs text-gray-400" id="elec-sec-display">0 秒</span>
+                            </div>
+                            <input type="number" id="util-elec" min="0" value="10" oninput="calculateUtilities()" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm text-white font-mono">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Results -->
+                <div class="bg-gray-950 p-6 rounded-lg border border-gray-800">
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div class="border-r border-gray-800">
+                            <span class="text-[11px] text-gray-400 uppercase">水費合計</span>
+                            <div class="text-xl font-bold text-blue-400 font-mono mt-1" id="util-water-cost">50 籌幣</div>
+                        </div>
+                        <div class="border-r border-gray-800">
+                            <span class="text-[11px] text-gray-400 uppercase">電費合計</span>
+                            <div class="text-xl font-bold text-yellow-400 font-mono mt-1" id="util-elec-cost">500 籌幣</div>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-gray-400 uppercase">總計應繳 (籌幣)</span>
+                            <div class="text-2xl font-black text-emerald-400 font-mono mt-1" id="util-total-cost">550 籌幣</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Sponsors & Active User -->
+        <div id="tab-sponsors" class="tab-content hidden">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Left: Active Player Config -->
+                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-base font-bold text-white mb-4 border-b border-gray-800 pb-2">👤 伺服器角色身份登錄</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1">選擇目前遊玩玩家</label>
+                            <select id="active-player-select" onchange="switchPlayer()" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-xs text-white">
+                                <option value="拉不拉斯">拉不拉斯 (研發作者)</option>
+                                <option value="舅舅">舅舅</option>
+                                <option value="表哥">表哥</option>
+                                <option value="堂哥">堂哥</option>
+                                <option value="堂姐">堂姐</option>
+                                <option value="表姐">表姐</option>
+                                <option value="表弟">表弟</option>
+                                <option value="表妹">表妹</option>
+                                <option value="堂弟">堂弟</option>
+                                <option value="羅蘭女王">羅蘭女王</option>
+                                <option value="妹主義">妹主義 (妹主義)</option>
+                            </select>
+                        </div>
+                        <div class="bg-gray-950 p-4 rounded border border-gray-800">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold text-white text-lg" id="player-avatar">拉</div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-white" id="player-name">拉不拉斯</h4>
+                                    <p class="text-[10px] text-gray-400" id="player-role">系統開發者兼特區總工程師</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 border-t border-gray-800 pt-3 flex justify-between text-xs text-gray-400">
+                                <span>個人總資產：</span>
+                                <span class="font-bold text-yellow-400">10,000 籌幣</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Scrolling Sponsor Wall -->
+                <div class="col-span-1 md:col-span-2 bg-gray-900 p-6 rounded-xl border border-gray-800 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-yellow-400 mb-1">👑 妹目壽司 V13 開發者與特別感謝贊助牆</h3>
+                        <p class="text-xs text-gray-400 border-b border-gray-800 pb-2 mb-4">主版本（重製版之前）特別贊助建立海鮮市場之大功臣名單：</p>
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 h-[240px] overflow-y-auto pr-2 text-xs" id="sponsor-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded text-center text-xs text-yellow-400">
+                        ⭐ <strong>特區最高終極任務：</strong> 在遊戲世界內賺到 <strong>100兆</strong>，即可榮獲 <strong>中正公司普通員工證照</strong>，駕駛電車與參與特區管理！
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Mini Games -->
+        <div id="tab-games" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Mini Game 1: Clicker -->
+                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-base font-bold text-white mb-2">🍣 小遊戲 A：拼豆壽司快速製作挑戰</h3>
+                    <p class="text-xs text-gray-400 mb-4">快速點擊拼豆原料，完成顧客指定的拼豆壽司，賺取大筆籌幣！</p>
+                    
+                    <div class="bg-gray-950 p-4 rounded-lg border border-gray-800 flex flex-col items-center">
+                        <div class="text-xs text-yellow-400 font-bold mb-2">【目前訂單】 <span id="game-order" class="text-white text-sm">鮭魚壽司</span></div>
+                        <div class="w-full h-32 bg-gray-900 rounded border border-gray-800 flex items-center justify-center text-5xl relative overflow-hidden" id="game-canvas-area">
+                            🍣
+                        </div>
+                        <div class="w-full grid grid-cols-3 gap-2 mt-4">
+                            <button onclick="clickIngredient('橘色拼豆')" class="bg-orange-600 text-white font-bold py-2 rounded text-xs">橘色拼豆</button>
+                            <button onclick="clickIngredient('白色拼豆')" class="bg-white text-black font-bold py-2 rounded text-xs">白色拼豆</button>
+                            <button onclick="clickIngredient('紅色拼豆')" class="bg-red-600 text-white font-bold py-2 rounded text-xs">紅色拼豆</button>
+                        </div>
+                        <div class="flex justify-between w-full mt-4 text-xs font-mono">
+                            <span>得分: <span id="game-score" class="text-green-400">0</span> 分</span>
+                            <span>已賺籌幣: <span id="game-earnings" class="text-yellow-400">0</span> $</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mini Game 2: Train Clicker -->
+                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-base font-bold text-white mb-2">🚇 小遊戲 B：135區電車司機大賽</h3>
+                    <p class="text-xs text-gray-400 mb-4">操控民權民生線電車，在適當的時間點在黃燈閃爍線煞車靠站！</p>
+                    
+                    <div class="bg-gray-950 p-4 rounded-lg border border-gray-800 flex flex-col items-center">
+                        <div class="text-xs text-blue-400 font-bold mb-2">當前電車位置：MML-01 馬姆基地</div>
+                        <div class="w-full h-32 bg-gray-900 rounded border border-gray-800 relative overflow-hidden flex items-end">
+                            <div id="train-sprite" class="w-12 h-8 bg-blue-500 rounded flex items-center justify-center text-xs font-bold text-white absolute bottom-4 left-0 transition-all duration-300">MML</div>
+                            <div class="w-4 h-12 bg-red-600 absolute bottom-4 right-10 flex items-center justify-center text-[10px] text-white">站</div>
+                        </div>
+                        <div class="w-full grid grid-cols-2 gap-2 mt-4">
+                            <button onclick="moveTrain()" class="bg-blue-600 text-white font-bold py-2 rounded text-xs">啟動前進 ➔</button>
+                            <button onclick="brakeTrain()" class="bg-red-600 text-white font-bold py-2 rounded text-xs font-mono">緊急煞車 🛑</button>
+                        </div>
+                        <div class="text-[11px] text-gray-400 mt-2 text-center" id="train-status">提示：前進至站牌並在距離 10px 內按下煞車以獲得 100 籌幣！</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Web Audio retro tone generator -->
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep(freq = 440, type = 'sine', duration = 0.08) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                // Ignore audio issues if blocked
+            }
+        }
+
+        // TAB Controller
+        function switchTab(tabId) {
+            playBeep(660, 'triangle');
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // Highlight Buttons
+            const buttons = ['stations', 'tickets', 'menu', 'utilities', 'sponsors', 'games'];
+            buttons.forEach(btn => {
+                const el = document.getElementById(`btn-tab-${btn}`);
+                if (`tab-${btn}` === tabId) {
+                    el.className = "px-4 py-2 bg-blue-600 text-white rounded-lg font-bold text-sm transition";
+                } else {
+                    el.className = "px-4 py-2 bg-gray-800 text-gray-300 rounded-lg font-bold text-sm transition";
+                }
+            });
+        }
+
+        // Responsive Device Changer
+        function setDevice(device) {
+            playBeep(880, 'square', 0.1);
+            const wrap = document.getElementById('device-wrapper');
+            wrap.className = ''; // reset
+            
+            // active button styling
+            ['pc', 'tablet', 'iphone', 'mobile'].forEach(id => {
+                document.getElementById(`btn-${id}`).className = "px-3 py-1 bg-gray-700 text-gray-300 rounded text-xs font-bold transition";
+            });
+
+            if (device === 'pc') {
+                wrap.classList.add('device-pc', 'bg-gray-950', 'p-6', 'rounded-2xl', 'border', 'border-gray-800', 'shadow-2xl');
+                document.getElementById('btn-pc').className = "px-3 py-1 bg-blue-600 text-white rounded text-xs font-bold transition";
+            } else if (device === 'tablet') {
+                wrap.classList.add('device-tablet', 'bg-gray-950', 'p-6');
+                document.getElementById('btn-tablet').className = "px-3 py-1 bg-blue-600 text-white rounded text-xs font-bold transition";
+            } else if (device === 'iphone-l') {
+                wrap.classList.add('device-iphone-l', 'bg-gray-950', 'p-6');
+                document.getElementById('btn-iphone').className = "px-3 py-1 bg-blue-600 text-white rounded text-xs font-bold transition";
+            } else if (device === 'mobile') {
+                wrap.classList.add('device-mobile', 'bg-gray-950', 'p-6');
+                document.getElementById('btn-mobile').className = "px-3 py-1 bg-blue-600 text-white rounded text-xs font-bold transition";
+            }
+        }
+
+        // Real-Time Time Tracker based on Laplace's Rules
+        function updateServerTime() {
+            const now = new Date();
+            const minutes = now.getMinutes();
+            const remainder = minutes % 20;
+            const quotient = Math.floor(minutes / 20);
+            
+            // Calculate Day, Cycle, Month, Year
+            // "三天是一個週期，24個週期是一個月(現實24小時)"
+            const totalDaysSinceStart = Math.floor(now.getTime() / (20 * 60 * 1000));
+            const gameCycle = Math.floor(totalDaysSinceStart / 3) % 24;
+            const gameDay = (totalDaysSinceStart % 3) + 1;
+            const gameMonth = (Math.floor(totalDaysSinceStart / (3 * 24)) % 12) + 1;
+            const gameYear = Math.floor(totalDaysSinceStart / (3 * 24 * 12)) + 1;
+
+            // Day / Night state
+            const isDay = remainder < 10;
+            const dayNightText = isDay ? "白天 ☀️" : "黑夜 🌙";
+            const currentMinInDay = remainder.toFixed(1);
+
+            document.getElementById('server-time-display').innerText = `第 ${gameYear} 年 ${gameMonth} 月 | 週期 ${gameCycle} | 第 ${gameDay} 天`;
+            document.getElementById('server-calc-detail').innerText = `目前分鐘：${minutes}分 | 20分除餘：${remainder} | 當前狀態：${dayNightText} (第 ${currentMinInDay} 分)`;
+
+            const dnBadge = document.getElementById('day-night-indicator');
+            if (isDay) {
+                dnBadge.className = "text-xs px-2 py-0.5 rounded-full font-bold bg-yellow-500/20 text-yellow-400";
+                dnBadge.innerText = "白天 ☀️";
+            } else {
+                dnBadge.className = "text-xs px-2 py-0.5 rounded-full font-bold bg-indigo-500/20 text-indigo-400";
+                dnBadge.innerText = "黑夜 🌙";
+            }
+        }
+        setInterval(updateServerTime, 1000);
+        updateServerTime();
+
+        // Currency Exchange Logic
+        function convertCurrency(source) {
+            const ntd = document.getElementById('conv-ntd');
+            const chou = document.getElementById('conv-chou');
+            const lin = document.getElementById('conv-lin');
+
+            if (source === 'ntd') {
+                const val = parseFloat(ntd.value) || 0;
+                chou.value = Math.round(val * 200);
+                lin.value = Math.round(val * 400);
+            } else if (source === 'chou') {
+                const val = parseFloat(chou.value) || 0;
+                ntd.value = Math.round(val / 200);
+                lin.value = Math.round(val * 2);
+            } else if (source === 'lin') {
+                const val = parseFloat(lin.value) || 0;
+                ntd.value = Math.round(val / 400);
+                chou.value = Math.round(val / 2);
+            }
+            playBeep(523, 'sine', 0.05);
+        }
+
+        // Ladder Fares Data based on Laplace's Map
+        const mmlFares = {
+            "MML-01": {"MML-01": 0, "MML-02": 50, "MML-03": 100, "MML-04": 100, "MML-05": 150, "MML-06": 150, "MML-07": 50, "MML-08": 50},
+            "MML-02": {"MML-01": 50, "MML-02": 0, "MML-03": 50, "MML-04": 50, "MML-05": 100, "MML-06": 150, "MML-07": 150, "MML-08": 50},
+            "MML-03": {"MML-01": 100, "MML-02": 50, "MML-03": 0, "MML-04": 50, "MML-05": 100, "MML-06": 100, "MML-07": 100, "MML-08": 150},
+            "MML-04": {"MML-01": 100, "MML-02": 50, "MML-03": 50, "MML-04": 0, "MML-05": 50, "MML-06": 100, "MML-07": 50, "MML-08": 100},
+            "MML-05": {"MML-01": 150, "MML-02": 100, "MML-03": 100, "MML-04": 50, "MML-05": 0, "MML-06": 50, "MML-07": 50, "MML-08": 100},
+            "MML-06": {"MML-01": 150, "MML-02": 150, "MML-03": 100, "MML-04": 100, "MML-05": 50, "MML-06": 0, "MML-07": 150, "MML-08": 150},
+            "MML-07": {"MML-01": 50, "MML-02": 150, "MML-03": 100, "MML-04": 50, "MML-05": 50, "MML-06": 150, "MML-07": 0, "MML-08": 50},
+            "MML-08": {"MML-01": 50, "MML-02": 50, "MML-03": 150, "MML-04": 100, "MML-05": 100, "MML-06": 150, "MML-07": 50, "MML-08": 0}
+        };
+
+        const ylbFares = {
+            "YLB-01": {"YLB-01": 0, "YLB-02": 100, "YLB-03": 150, "YLB-04": 250, "YLB-05": 50},
+            "YLB-02": {"YLB-01": 100, "YLB-02": 0, "YLB-03": 50, "YLB-04": 100, "YLB-05": 100},
+            "YLB-03": {"YLB-01": 150, "YLB-02": 50, "YLB-03": 0, "YLB-04": 100, "YLB-05": 100},
+            "YLB-04": {"YLB-01": 250, "YLB-02": 100, "YLB-03": 100, "YLB-04": 0, "YLB-05": 250},
+            "YLB-05": {"YLB-01": 50, "YLB-02": 100, "YLB-03": 100, "YLB-04": 250, "YLB-05": 0}
+        };
+
+        const stationNames = {
+            "MML-01": "馬姆基地", "MML-02": "鋼琴站", "MML-03": "運杏安和", "MML-04": "國際機場站",
+            "MML-05": "婆不基地", "MML-06": "世朗站", "MML-07": "充電3C站", "MML-08": "麻木基地",
+            "YLB-01": "馬姆基地", "YLB-02": "充電3C", "YLB-03": "國際機場", "YLB-04": "世朗", "YLB-05": "信義飯店"
+        };
+
+        function calculateMmlTicket() {
+            const start = document.getElementById('mml-start').value;
+            const end = document.getElementById('mml-end').value;
+            const fare = mmlFares[start][end];
+            document.getElementById('mml-fare-result').innerText = `${fare} 籌幣`;
+
+            // Update ticket Mockup
+            document.getElementById('ticket-fare-badge').innerText = `${fare} 籌幣`;
+            document.getElementById('ticket-station-flow').innerText = `${stationNames[start]} ➔ ${stationNames[end]}`;
+            document.getElementById('ticket-line-badge').innerText = "MML-民權民生線";
+            document.getElementById('ticket-mockup').className = "w-full max-w-sm bg-blue-600 rounded-lg p-4 text-white shadow-lg relative border-2 border-dashed border-white/50 my-6";
+            playBeep(400, 'sine');
+        }
+
+        function calculateYlbTicket() {
+            const start = document.getElementById('ylb-start').value;
+            const end = document.getElementById('ylb-end').value;
+            const fare = ylbFares[start][end];
+            document.getElementById('ylb-fare-result').innerText = `${fare} 籌幣`;
+
+            // Update ticket Mockup
+            document.getElementById('ticket-fare-badge').innerText = `${fare} 籌幣`;
+            document.getElementById('ticket-station-flow').innerText = `${stationNames[start]} ➔ ${stationNames[end]}`;
+            document.getElementById('ticket-line-badge').innerText = "YLB-黃燈閃爍線";
+            document.getElementById('ticket-mockup').className = "w-full max-w-sm bg-yellow-500 rounded-lg p-4 text-black shadow-lg relative border-2 border-dashed border-black/50 my-6";
+            playBeep(500, 'triangle');
+        }
+
+        function generateFlightTicket() {
+            playBeep(700, 'sine', 0.2);
+            document.getElementById('ticket-fare-badge').innerText = `500 籌幣`;
+            document.getElementById('ticket-station-flow').innerText = `國際機場 ⇄ 中正機場 (來回航線)`;
+            document.getElementById('ticket-line-badge').innerText = "✈️ 林航國際機票";
+            document.getElementById('ticket-mockup').className = "w-full max-w-sm bg-red-700 rounded-lg p-4 text-white shadow-lg relative border-2 border-dashed border-white/50 my-6";
+        }
+
+        // Stations Content Engine
+        const stationsData = {
+            "MML-1": {
+                name: "MML-1 馬姆基地",
+                details: "最古老的車站，創立於2016年6月20日。",
+                features: `
+                    <div class="space-y-4">
+                        <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                            <h5 class="text-sm font-bold text-yellow-400 mb-2">🏧 馬姆基地自動櫃員機 (ATM)</h5>
+                            <p class="text-xs text-gray-400 mb-2">提供帳號註冊與資產管理。2026/06/04 已全面開放註冊！</p>
+                            <div class="flex gap-2">
+                                <button onclick="atmRegister()" class="bg-blue-600 px-3 py-1 text-xs text-white rounded font-bold">新玩家註冊帳戶 (+1000$)</button>
+                                <button onclick="playBeep(440)" class="bg-gray-700 px-3 py-1 text-xs text-gray-300 rounded">查詢餘額</button>
+                            </div>
+                        </div>
+                        <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                            <h5 class="text-sm font-bold text-blue-400 mb-2">🏛️ 國家音樂廳 (1號音樂廳)</h5>
+                            <p class="text-xs text-gray-400 mb-2">民眾在此自行演奏可以賺取打賞！整點不定期舉辦音樂會。</p>
+                            <div class="flex gap-2">
+                                <button onclick="playBeep(523, 'sine', 0.4); playBeep(659, 'sine', 0.4);" class="bg-emerald-600 px-3 py-1 text-xs text-white rounded font-bold">欣賞音樂 (一票 5000 籌幣)</button>
+                                <button onclick="playBeep(880, 'triangle', 0.3)" class="bg-gray-700 px-3 py-1 text-xs text-gray-300 rounded">上台表演</button>
+                            </div>
+                        </div>
+                        <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                            <h5 class="text-sm font-bold text-gray-300 mb-2">🛣️ 聯通地道</h5>
+                            <p class="text-xs text-gray-400">目前此區域是唯一開放可以走路通行的安全地道，直接連接到 <strong>MML-2 鋼琴站</strong>。</p>
+                        </div>
+                    </div>
+                `
             },
-            zh_cn: {
-                title: "妹目寿司 中央数据运作数据库 V12 重制版",
-                real_elapsed: "真实世界总运行时间 (Real Elapsed)",
-                game_env: "游戏环境状态 (Environment)",
-                game_date: "游戏专用历法时间 (Game Calendar)",
-                countdown: "周期流失倒数 (Cycle Countdown)",
-                day: "🌞 白天 (Daytime)",
-                night: "🌙 黑夜 (Nighttime)",
-                st_title: "135区车站联通网络",
-                core_title: "核心系统中央模块",
-                search_holder: "🔍 输入关键字智慧搜索... (支持搜索产地、拼豆方块颜色、车站、金额，系统将即时交叉高亮显示)"
+            "MML-2": {
+                name: "MML-2 鋼琴站",
+                details: "民權民生線第二站，與馬姆基地之間由地道連通。",
+                features: `
+                    <div class="space-y-4">
+                        <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                            <h5 class="text-sm font-bold text-emerald-400 mb-2">🎹 國家音樂廳 (2號音樂廳)</h5>
+                            <p class="text-xs text-gray-400 mb-2">鋼琴站附屬音樂廳，擁有更完美的古典鋼琴拼豆音箱！</p>
+                            <button onclick="playBeep(261, 'square', 0.5); playBeep(329, 'square', 0.5);" class="bg-emerald-600 px-3 py-1 text-xs text-white rounded font-bold">預購音樂會票 (一票 5000 籌幣)</button>
+                        </div>
+                    </div>
+                `
             },
-            ja: {
-                title: "妹目寿司 中央データ運用データベース V12 リメイク版",
-                real_elapsed: "現実世界累計稼働時間 (Real Elapsed)",
-                game_env: "ゲーム環境状態 (Environment)",
-                game_date: "ゲーム専用暦時間 (Game Calendar)",
-                countdown: "サイクル経過カウントダウン",
-                day: "🌞 昼間 (Daytime)",
-                night: "🌙 夜間 (Nighttime)",
-                st_title: "135区駅連絡ネットワーク",
-                core_title: "コアシステムモジュール",
-                search_holder: "🔍 キーワードでスマート検索... (産地、アイロンビーズの色、駅名、価格をクロス検索しハイライト表示)"
+            "MML-3": {
+                name: "MML-3 運杏安和",
+                details: "因突發意外，目前暫停對外開放！",
+                features: `
+                    <div class="bg-red-950/20 p-6 rounded border border-red-900 text-center">
+                        <span class="text-4xl">⚠️</span>
+                        <h5 class="text-base font-bold text-red-500 mt-2">食品坍塌突發事故</h5>
+                        <p class="text-xs text-red-400 mt-1">因周邊堆放的食品與原料拼豆過多發生嚴重倒塌，目前ATM與月台已被深埋，無法提供使用。</p>
+                    </div>
+                `
             },
-            ko: {
-                title: "메이무 스시 중앙 데이터 운영 데이터베이스 V12 리메이크판",
-                real_elapsed: "현실 세계 누적 가동 시간 (Real Elapsed)",
-                game_env: "게임 환경 상태 (Environment)",
-                game_date: "게임 전용 달력 시간 (Game Calendar)",
-                countdown: "주기 소요 카운트다운",
-                day: "🌞 낮 (Daytime)",
-                night: "🌙 밤 (Nighttime)",
-                st_title: "135구역 역 연결 네트워크",
-                core_title: "핵심 시스템 모듈",
-                search_holder: "🔍 키워드 스마트 검색... (원산지, 펄러비즈 색상, 역이름, 가격 실시간 교차 하이라이트 검색 지원)"
+            "MML-4": {
+                name: "MML-4 國際機場站",
+                details: "135區最大的跨區航空樞紐，設有大型購物小賣場。",
+                features: `
+                    <div class="space-y-4">
+                        <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                            <h5 class="text-sm font-bold text-blue-400 mb-2">✈️ 機場辦票櫃台 (前往132區)</h5>
+                            <p class="text-xs text-gray-400 mb-2">前往起伏巨大的132山區。單程250籌幣，來回500籌幣。</p>
+                            <button onclick="generateFlightTicket()" class="bg-red-600 px-3 py-1 text-xs text-white rounded font-bold">購買 ⇄ 來回機票</button>
+                        </div>
+                        <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                            <h5 class="text-sm font-bold text-yellow-400 mb-2">🏢 國際食品小賣場</h5>
+                            <p class="text-xs text-gray-400 mb-2">提供多種高級生鮮原料（海苔、和牛、龍蝦）！</p>
+                            <button onclick="switchTab('tab-menu')" class="bg-yellow-500 text-black px-3 py-1 text-xs rounded font-bold">開啟小賣場菜單 ➔</button>
+                        </div>
+                    </div>
+                `
+            },
+            "MML-5": {
+                name: "MML-5 婆不基地",
+                details: "135區的重要交通轉運點。",
+                features: `
+                    <div class="bg-gray-800 p-4 rounded border border-gray-700 text-center">
+                        <h5 class="text-sm font-bold text-white mb-2">🔄 轉乘台雄線 / 美東線</h5>
+                        <p class="text-xs text-gray-400">請在此月台下車，即可無縫轉乘其他跨縣市客運鐵路線路。</p>
+                    </div>
+                `
+            },
+            "MML-6": {
+                name: "MML-6 世朗站",
+                details: "本特區最重要的飲水保障中心。",
+                features: `
+                    <div class="space-y-4">
+                        <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                            <h5 class="text-sm font-bold text-blue-400 mb-2">🚰 取水站自助收銀台</h5>
+                            <p class="text-xs text-gray-400 mb-2">100毫升水僅需 10 籌幣，買 1000ml 送 100ml！</p>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="water-station-input" value="1000" class="bg-gray-900 border border-gray-700 px-2 py-1 text-xs rounded text-white font-mono w-24">
+                                <button onclick="calcWaterStation()" class="bg-blue-600 px-3 py-1 text-xs text-white rounded font-bold">計算價格</button>
+                            </div>
+                            <p class="text-xs text-yellow-400 mt-2" id="water-station-result">費用：90 籌幣 (已享贈送福利！)</p>
+                        </div>
+                    </div>
+                `
+            },
+            "MML-7": {
+                name: "MML-7 充電3C站",
+                details: "提供旅客一站式電子設備能源補給。",
+                features: `
+                    <div class="space-y-4">
+                        <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                            <h5 class="text-sm font-bold text-yellow-400 mb-2">📻 廣播室打歌系統</h5>
+                            <p class="text-xs text-gray-400 mb-2">只要花費 800 籌幣，你就能向全特區廣播自選歌曲，直到下一位玩家霸台為止！</p>
+                            <button onclick="playBeep(1200, 'sawtooth', 0.5)" class="bg-yellow-500 text-black px-3 py-1 text-xs rounded font-bold">發送個人特調音樂 🎵</button>
+                        </div>
+                    </div>
+                `
+            },
+            "MML-8": {
+                name: "MML-8 麻木基地",
+                details: "全村最繁榮的工業與拼豆原料集散市場。",
+                features: `
+                    <div class="space-y-4">
+                        <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                            <h5 class="text-sm font-bold text-white mb-2">🖨️ 天字印刷廠櫃檯</h5>
+                            <p class="text-xs text-gray-400 mb-2">影印、護貝及通行證裁切中心。</p>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <button onclick="printBill(1000)" class="bg-gray-700 py-1 rounded">影印黑白 ($1000)</button>
+                                <button onclick="printBill(5000)" class="bg-gray-700 py-1 rounded">影印彩色 ($5000)</button>
+                                <button onclick="printBill(1000)" class="bg-gray-700 py-1 rounded">證件護貝 ($1000)</button>
+                                <button onclick="printBill(16000)" class="bg-gray-700 py-1 rounded">買裁紙機 ($16000)</button>
+                            </div>
+                        </div>
+                        <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                            <h5 class="text-sm font-bold text-emerald-400 mb-2">🦞 美濃海鮮市場 (麻市)</h5>
+                            <p class="text-xs text-gray-400 mb-2">營業時間 7:40 - 18:15。拉不拉斯作者與親友們斥巨資建立的大型市場！</p>
+                            <div class="grid grid-cols-2 gap-2 text-[11px] text-gray-300 mb-3">
+                                <span>● 鮭魚一條: 50籌幣</span>
+                                <span>● 蝶豆花10ml: 5籌幣</span>
+                                <span>● 魷魚一條: 30籌幣</span>
+                                <span>● 章魚腳一隻: 15籌幣</span>
+                                <span>● 龍蝦一條: 90籌幣</span>
+                                <span>● 海底天然氣100ml: 500籌幣</span>
+                            </div>
+                            <button onclick="switchTab('tab-menu')" class="bg-emerald-600 text-white px-3 py-1 text-xs rounded font-bold w-full">進入菜單直接採購 ➔</button>
+                        </div>
+                    </div>
+                `
+            },
+            "MML-9": {
+                name: "MML-9 信義飯店",
+                details: "供旅客休息度假的豪華度假村酒店。",
+                features: `
+                    <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                        <h5 class="text-sm font-bold text-yellow-400 mb-2">🏨 信義五星飯店住房處</h5>
+                        <p class="text-xs text-gray-400 mb-2">入住一週僅需 10000 籌幣，全包水電！</p>
+                        <p class="text-[10px] text-red-400 mb-3">（注意：由於特區能源管線調度問題，目前無提供熱水）</p>
+                        <button onclick="playBeep(600, 'sine')" class="bg-yellow-500 text-black px-4 py-1 text-xs font-bold rounded">登記入住</button>
+                    </div>
+                `
+            },
+            "YLB-1": {
+                name: "YLB-1 馬姆基地 (黃燈)",
+                details: "黃燈閃爍線的核心起迄站，可與MML線同站轉乘。",
+                features: `
+                    <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                        <p class="text-xs text-gray-400">已全面更新電車編號，使用黃燈閃爍線專屬軌道！</p>
+                    </div>
+                `
+            },
+            "YLB-2": {
+                name: "YLB-2 充電3C (黃燈)",
+                details: "黃燈閃爍線第二站，配有頂級無線能量發射塔。",
+                features: `
+                    <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                        <p class="text-xs text-gray-400">可為玩家的隨身拼豆手錶進行免費超快充！</p>
+                    </div>
+                `
+            },
+            "YLB-3": {
+                name: "YLB-3 國際機場 (黃燈)",
+                details: "國際機場接駁捷運，前往航廈非常方便。",
+                features: `
+                    <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                        <p class="text-xs text-gray-400">直達航站大樓出口，出站即可辦理登機手續。</p>
+                    </div>
+                `
+            },
+            "YLB-4": {
+                name: "YLB-4 世朗 (黃燈)",
+                details: "水資源總調度中心的黃燈支線站台。",
+                features: `
+                    <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                        <p class="text-xs text-gray-400">設有特大排洪大壩觀景台，供遊客下車參觀拍照。</p>
+                    </div>
+                `
+            },
+            "YLB-5": {
+                name: "YLB-5 信義飯店 (黃燈)",
+                details: "信義大飯店門前的便利快捷站點。",
+                features: `
+                    <div class="bg-gray-800 p-4 rounded border border-gray-700">
+                        <p class="text-xs text-gray-400">下車即到飯店大廳後門，避免日曬雨淋！</p>
+                    </div>
+                `
             }
         };
 
-        let currentLang = 'zh_tw';
-
-        // 核心多語系秒切換函數
-        function switchLang(lang) {
-            currentLang = lang;
-            document.querySelectorAll('.lang-selector button').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-
-            document.getElementById('txt-title').innerHTML = i18n[lang].title;
-            document.getElementById('lbl-real-elapsed').innerText = i18n[lang].real_elapsed;
-            document.getElementById('lbl-game-env').innerText = i18n[lang].game_env;
-            document.getElementById('lbl-game-date').innerText = i18n[lang].game_date;
-            document.getElementById('lbl-countdown').innerText = i18n[lang].countdown;
-            document.getElementById('sidebar-station-title').innerText = i18n[lang].st_title;
-            document.getElementById('sidebar-core-title').innerText = i18n[lang].core_title;
-            document.getElementById('global-search').placeholder = i18n[lang].search_holder;
-            
-            updateServerTimeMechanics();
-        }
-
-        // 單頁模組與車站詳情跳轉跳轉器 (SPA Router)
-        function showView(viewId) {
-            document.querySelectorAll('.view-section').forEach(view => {
-                view.classList.remove('active');
-            });
-            const targetView = document.getElementById(viewId);
-            if (targetView) {
-                targetView.classList.add('active');
-                // 移動端自動捲動至視窗主內容區
-                if(window.innerWidth < 992) {
-                    document.getElementById('main-content-wrapper').scrollIntoView({ behavior: 'smooth' });
-                }
+        function selectStation(id) {
+            playBeep(587, 'sine', 0.05);
+            const data = stationsData[id];
+            const container = document.getElementById('station-details-container');
+            if (data) {
+                container.innerHTML = `
+                    <div class="border-b border-gray-800 pb-4 mb-4">
+                        <h4 class="text-xl font-black text-white">${data.name}</h4>
+                        <p class="text-xs text-gray-400 mt-1">${data.details}</p>
+                    </div>
+                    <div>${data.features}</div>
+                `;
             }
-            
-            // 處理側邊導覽按鈕高亮
-            document.querySelectorAll('.nav-item button').forEach(btn => {
-                btn.classList.remove('active');
+        }
+
+        function calcWaterStation() {
+            const ml = parseFloat(document.getElementById('water-station-input').value) || 0;
+            let cost = 0;
+            if (ml >= 1000) {
+                // Buy 1000ml get 100ml free, so they pay for 1000ml = 100籌幣 but get 1100ml.
+                const portions = Math.floor(ml / 1100);
+                const remainder = ml % 1100;
+                cost = (portions * 100) + (remainder / 10);
+            } else {
+                cost = ml / 10;
+            }
+            document.getElementById('water-station-result').innerText = `費用：${cost.toFixed(0)} 籌幣 (取水量: ${ml} ml)`;
+            playBeep(600, 'sine');
+        }
+
+        function printBill(cost) {
+            playBeep(100, 'sawtooth', 0.3);
+            alert(`天字印刷廠提醒：應繳金額為 ${cost} 籌幣。已出單！`);
+        }
+
+        // Sushi Menu Database
+        const sushiMenu = [
+            // Category 1: Sushi
+            { name: "小紅鮭壽司", price: 50, cat: "壽司" },
+            { name: "鮭魚壽司", price: 100, cat: "壽司" },
+            { name: "鮪魚壽司", price: 100, cat: "壽司" },
+            { name: "魷魚壽司", price: 100, cat: "壽司" },
+            { name: "牛肉壽司", price: 100, cat: "壽司" },
+            { name: "蛋壽司", price: 100, cat: "壽司" },
+            { name: "蝦子壽司", price: 100, cat: "壽司" },
+            { name: "起司牛肉", price: 100, cat: "壽司" },
+            { name: "紅鮭壽司", price: 100, cat: "壽司" },
+            { name: "紅鮭條", price: 100, cat: "壽司" },
+            { name: "鮭魚卵壽司 (醬油漬/橘)", price: 150, cat: "壽司" },
+            { name: "鮭魚卵壽司 (鹽漬/紅)", price: 150, cat: "壽司" },
+            { name: "炙燒干貝", price: 150, cat: "壽司" },
+            { name: "龍蝦壽司", price: 150, cat: "壽司" },
+            { name: "玉米軍艦", price: 150, cat: "壽司" },
+            { name: "鮭魚肚壽司", price: 200, cat: "壽司" },
+            // Category 2: Others
+            { name: "飯糰", price: 50, cat: "輕食" },
+            { name: "薯條", price: 150, cat: "速食" },
+            { name: "肉漢堡", price: 150, cat: "速食" },
+            { name: "素漢堡", price: 150, cat: "速食" },
+            { name: "藍莓蛋糕", price: 300, cat: "糕點" },
+            { name: "草莓蛋糕", price: 300, cat: "糕點" },
+            { name: "起司蛋糕", price: 300, cat: "糕點" },
+            { name: "橘子蛋糕", price: 300, cat: "糕點" },
+            { name: "可樂", price: 50, cat: "飲品" },
+            { name: "雪碧", price: 50, cat: "飲品" },
+            { name: "冰島威士忌", price: 300, cat: "飲品" },
+            { name: "普通刨冰", price: 350, cat: "甜品" },
+            { name: "綠杯雪碧", price: 150, cat: "甜品" },
+            { name: "綠杯可樂", price: 150, cat: "甜品" },
+            { name: "綠杯冰島水", price: 100, cat: "甜品" }
+        ];
+
+        let cart = [];
+
+        function renderSushiMenu() {
+            const grid = document.getElementById('sushi-menu-grid');
+            grid.innerHTML = '';
+            sushiMenu.forEach((item, index) => {
+                grid.innerHTML += `
+                    <div class="bg-gray-800 p-3 rounded border border-gray-700 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs px-1.5 py-0.5 rounded bg-blue-900 text-blue-300 font-bold mr-1 text-[10px]">${item.cat}</span>
+                            <span class="text-xs font-bold text-white">${item.name}</span>
+                            <div class="text-[11px] text-yellow-400 font-mono mt-0.5">${item.price} 籌幣</div>
+                        </div>
+                        <button onclick="addToCart(${index})" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-xs px-2.5 py-1 rounded transition">+</button>
+                    </div>
+                `;
             });
         }
 
-        // 核心時間沙盒與真實世界同步引擎
-        function updateServerTimeMechanics() {
-            const now = Date.now();
-            const totalMsElapsed = now - SERVER_START_TIME;
+        function addToCart(index) {
+            playBeep(800, 'triangle', 0.05);
+            const item = sushiMenu[index];
+            const existing = cart.find(c => c.name === item.name);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            const list = document.getElementById('cart-items');
+            const totalDisplay = document.getElementById('cart-total');
+            list.innerHTML = '';
             
-            if (totalMsElapsed < 0) {
-                document.getElementById('val-real-time').innerText = "尚未開服";
+            if (cart.length === 0) {
+                list.innerHTML = '<div class="text-center text-gray-500 py-10">購物車目前空空如也</div>';
+                totalDisplay.innerText = '0 籌幣';
                 return;
             }
 
-            // 1. 計算真實世界流逝總時間
-            const totalSecs = Math.floor(totalMsElapsed / 1000);
-            const secs = totalSecs % 60;
-            const mins = Math.floor(totalSecs / 60) % 60;
-            const hours = Math.floor(totalSecs / 3600) % 24;
-            const days = Math.floor(totalSecs / 86400);
-            
-            document.getElementById('val-real-time').innerText = 
-                `${String(days).padStart(2,'0')}天 ${String(hours).padStart(2,'0')}時 ${String(mins).padStart(2,'0')}分 ${String(secs).padStart(2,'0')}秒`;
-
-            // 2. 依規約計算當前20分鐘週期與晝夜狀態
-            const totalMinutesElapsed = Math.floor(totalMsElapsed / (60 * 1000));
-            const currentCycleSecs = Math.floor(totalMsElapsed / 1000) % 1200; // 20分鐘 = 1200秒
-            const remMin = Math.floor(currentCycleSecs / 60);
-            const remSec = currentCycleSecs % 60;
-            
-            // 倒數計時顯示
-            const countSecLeft = 1200 - currentCycleSecs;
-            const countM = Math.floor(countSecLeft / 60);
-            const countS = countSecLeft % 60;
-            document.getElementById('val-countdown').innerText = `${String(countM).padStart(2,'0')}:${String(countS).padStart(2,'0')}`;
-
-            // 前10分鐘是白天，後10分鐘是黑夜
-            const isDaytime = remMin < 10;
-            const envCard = document.getElementById('card-env');
-            if (isDaytime) {
-                document.getElementById('val-game-env').innerText = i18n[currentLang].day + ` [${remMin}分${remSec}秒]`;
-                envCard.className = "dash-card env-day";
-            } else {
-                document.getElementById('val-game-env').innerText = i18n[currentLang].night + ` [${remMin}分${remSec}秒]`;
-                envCard.className = "dash-card env-night";
-            }
-
-            // 3. 複雜自訂行事曆日曆系統
-            // 規約：20分鐘為1遊戲天，每3天為一週期並重置回第1天。
-            // 每3天為1週，24週為一個遊戲月(即24*3=72天為一個月)。
-            // 換算可知：真實世界24小時 = 72遊戲天 = 24遊戲週 = 1遊戲月。意即真實世界1天 = 遊戲中1個月。
-            const totalGameDays = Math.floor(totalMinutesElapsed / 20) + 1;
-            const gameDayInCycle = ((totalGameDays - 1) % 3) + 1; // 每三天重複變成第一天
-            
-            const totalGameMonths = Math.floor((totalGameDays - 1) / 72);
-            
-            // 自訂配合好幾年的年曆陣列 (第一年28個月，第二年29個月，第三年30個月，第四年31個月，之後循環)
-            const monthsInYears = [28, 29, 30, 31];
-            let remainingMonths = totalGameMonths;
-            let calculatedYear = 1;
-            let yearIdx = 0;
-            
-            while (true) {
-                let currentYearMax = monthsInYears[yearIdx % 4];
-                if (remainingMonths >= currentYearMax) {
-                    remainingMonths -= currentYearMax;
-                    calculatedYear++;
-                    yearIdx++;
-                } else {
-                    break;
-                }
-            }
-            
-            let calculatedMonth = remainingMonths + 1;
-            let calculatedDayInMonth = ((totalGameDays - 1) % 72) + 1;
-
-            if (currentLang === 'zh_tw' || currentLang === 'zh_cn') {
-                document.getElementById('val-game-date').innerText = `第 ${calculatedYear} 年 ${calculatedMonth} 月 ${calculatedDayInMonth} 日 (週期第 ${gameDayInCycle} 天)`;
-            } else if (currentLang === 'ja') {
-                document.getElementById('val-game-date').innerText = `第 ${calculatedYear} 年 ${calculatedMonth} 月 ${calculatedDayInMonth} 日 (サイクル第 ${gameDayInCycle} 日)`;
-            } else {
-                document.getElementById('val-game-date').innerText = `Year ${calculatedYear} / Month ${calculatedMonth} / Day ${calculatedDayInMonth} (Cycle Day ${gameDayInCycle})`;
-            }
+            let total = 0;
+            cart.forEach((item, idx) => {
+                const subtotal = item.price * item.qty;
+                total += subtotal;
+                list.innerHTML += `
+                    <div class="flex justify-between items-center bg-gray-950 p-2 rounded border border-gray-800">
+                        <div>
+                            <p class="font-bold text-white">${item.name}</p>
+                            <p class="text-[10px] text-yellow-400 font-mono">${item.price} x ${item.qty} = ${subtotal} 籌幣</p>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="changeQty(${idx}, -1)" class="bg-gray-800 text-white px-2 rounded font-bold">-</button>
+                            <button onclick="changeQty(${idx}, 1)" class="bg-gray-800 text-white px-2 rounded font-bold">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+            totalDisplay.innerText = `${total} 籌幣`;
         }
 
-        setInterval(updateServerTimeMechanics, 1000);
-
-        // Web Audio API 解壓音效模擬晶片 (免外部音檔音效生成)
-        function triggerPopSound() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-                
-                // 模擬牙籤刺入與薄膜破裂之高頻瞬態啵一聲
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(140, ctx.currentTime);
-                // 頻率在0.04秒內極速向上滑音，模擬破裂爆發點
-                osc.frequency.exponentialRampToValueAtTime(750, ctx.currentTime + 0.04);
-                
-                gain.gain.setValueAtTime(0.6, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
-                
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                
-                osc.start();
-                osc.stop(ctx.currentTime + 0.07);
-            } catch (e) {
-                console.log("音訊設備尚未就緒");
+        function changeQty(index, amt) {
+            playBeep(440);
+            cart[index].qty += amt;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
             }
+            updateCart();
         }
 
-        // 全域智慧字典即時檢索系統
-        function doSmartSearch() {
-            const query = document.getElementById('global-search').value.toLowerCase().trim();
-            const targets = document.querySelectorAll('.search-target, .search-target tr, .search-target p, .search-target div');
-            
-            targets.forEach(el => {
-                if (el.children.length > 5 && !el.classList.contains('search-target')) return; 
-                
-                if (query === "") {
-                    el.classList.remove('highlight-match');
-                    return;
-                }
-                
-                const text = el.innerText ? el.innerText.toLowerCase() : "";
-                if (text.includes(query)) {
-                    el.classList.add('highlight-match');
-                } else {
-                    el.classList.remove('highlight-match');
-                }
+        function clearCart() {
+            playBeep(300, 'sine', 0.2);
+            cart = [];
+            updateCart();
+        }
+
+        function checkoutCart() {
+            if (cart.length === 0) return;
+            playBeep(1200, 'sine', 0.5);
+            alert("廚房已收到訂單！大廚正為您用拼豆完美塑形中，請稍候。");
+            cart = [];
+            updateCart();
+        }
+
+        // Utilities calculator based on specific Area Rates
+        const utilRates = {
+            "135": { water: 50, elec: 50 },
+            "132": { water: 150, elec: 200 }
+        };
+
+        function updateUtilityRate() {
+            playBeep(500, 'triangle');
+            calculateUtilities();
+        }
+
+        function calculateUtilities() {
+            const selectedArea = document.querySelector('input[name="util-area"]:checked').value;
+            const waterQty = parseFloat(document.getElementById('util-water').value) || 0;
+            const elecQty = parseFloat(document.getElementById('util-elec').value) || 0;
+
+            const rate = utilRates[selectedArea];
+            const waterCost = waterQty * rate.water;
+            const elecCost = elecQty * rate.elec;
+            const total = waterCost + elecCost;
+
+            document.getElementById('water-ml-display').innerText = `${(waterQty * 100).toFixed(0)} 毫升 (ml)`;
+            document.getElementById('elec-sec-display').innerText = `${(elecQty * 60).toFixed(0)} 秒`;
+
+            document.getElementById('util-water-cost').innerText = `${waterCost} 籌幣`;
+            document.getElementById('util-elec-cost').innerText = `${elecCost} 籌幣`;
+            document.getElementById('util-total-cost').innerText = `${total} 籌幣`;
+        }
+
+        // Player & Sponsor Walls
+        const sponsors = [
+            { name: "拉不拉斯", amount: "4,000,000", badge: "開發創始人" },
+            { name: "妹主義", amount: "5,000,000", badge: "最高贊助官" },
+            { name: "表弟", amount: "3,600,000", badge: "親友元老" },
+            { name: "舅舅", amount: "2,800,000", badge: "長輩後援" },
+            { name: "表哥", amount: "300,000", badge: "全力相挺" },
+            { name: "堂弟", amount: "20,000", badge: "家族成員" },
+            { name: "堂姐", amount: "500", badge: "家族溫情" }
+        ];
+
+        function renderSponsors() {
+            const list = document.getElementById('sponsor-list');
+            list.innerHTML = '';
+            sponsors.forEach(s => {
+                list.innerHTML += `
+                    <div class="bg-gray-950 p-3 rounded border border-gray-800 text-center flex flex-col justify-between">
+                        <span class="text-[10px] bg-yellow-500/10 text-yellow-400 font-bold px-1 py-0.5 rounded self-center mb-1">${s.badge}</span>
+                        <span class="font-bold text-white text-xs">${s.name}</span>
+                        <span class="text-xs font-mono font-bold text-green-400 mt-1">${s.amount} 籌幣</span>
+                    </div>
+                `;
             });
         }
 
-        // 捷運車站網絡數據結構
-        const mmlStations = ["馬姆基地 (MML-1)", "鋼琴站 (MML-2)", "國際機場 (MML-4)", "婆不基地 (MML-5)", "世朗站 (MML-6)", "充電3C站 (MML-7)", "麻木基地 (MML-8)"];
-        const ylbStations = ["馬姆基地 (YLB-1)", "充電3C站 (YLB-2)", "國際機場 (YLB-3)", "世朗站 (YLB-4)", "信義飯店 (YLB-5)"];
+        const playerRoles = {
+            "拉不拉斯": "系統開發者兼特區總工程師",
+            "舅舅": "特區大天使資深投資者",
+            "表哥": "電車路線高階維護主任",
+            "堂哥": "美濃海鮮市場聯合董事",
+            "堂姐": "鋼琴站古典鋼琴首席",
+            "表姐": "國際機場航線首席機長",
+            "表弟": "拼豆工作坊高級工藝師",
+            "表妹": "國家音樂廳特邀大提琴手",
+            "堂弟": "天字印刷廠高級品檢師",
+            "羅蘭女王": "132起伏特區皇家特使",
+            "妹主義": "妹主義大碗刨冰全球推廣大使"
+        };
 
-        function updateTicketStations() {
-            const line = document.getElementById('ticket-line').value;
-            const fromSelect = document.getElementById('ticket-from');
-            const toSelect = document.getElementById('ticket-to');
-            
-            fromSelect.innerHTML = "";
-            toSelect.innerHTML = "";
-            
-            const arr = (line === "MML") ? mmlStations : ylbStations;
-            arr.forEach(st => {
-                let opt1 = document.createElement('option');
-                opt1.value = st; opt1.innerText = st;
-                let opt2 = document.createElement('option');
-                opt2.value = st; opt2.innerText = st;
-                fromSelect.appendChild(opt1);
-                toSelect.appendChild(opt2);
-            });
+        function switchPlayer() {
+            playBeep(700, 'sine');
+            const select = document.getElementById('active-player-select').value;
+            document.getElementById('player-name').innerText = select;
+            document.getElementById('player-avatar').innerText = select.charAt(0);
+            document.getElementById('player-role').innerText = playerRoles[select] || "特區尊榮玩家";
         }
-        updateTicketStations();
 
-        // Canvas 電子車票動態生成繪製引擎
-        function generateElectronicTicket() {
-            const canvas = document.getElementById('ticketCanvas');
-            const ctx = canvas.getContext('2d');
-            const line = document.getElementById('ticket-line').value;
-            const fromSt = document.getElementById('ticket-from').value;
-            const toSt = document.getElementById('ticket-to').value;
+        // Mini Game A: Sushi Clicker
+        const gameItems = ["鮭魚壽司", "蛋壽司", "起司牛肉", "魷魚壽司"];
+        let currentTarget = "鮭魚壽司";
+        let gameScore = 0;
+        let gameCoins = 0;
+        let gameProgress = [];
+
+        function generateNewOrder() {
+            currentTarget = gameItems[Math.floor(Math.random() * gameItems.length)];
+            document.getElementById('game-order').innerText = currentTarget;
+            document.getElementById('game-canvas-area').innerText = "🍣";
+            gameProgress = [];
+        }
+
+        function clickIngredient(ingredient) {
+            playBeep(900, 'square', 0.05);
+            gameProgress.push(ingredient);
+            document.getElementById('game-canvas-area').innerText = "🔨";
             
-            // 計算規則車資
-            let fare = 50;
-            if (fromSt !== toSt) {
-                fare = (line === "MML") ? 120 : 220; // 模擬隨機或固定浮動車資
+            setTimeout(() => {
+                document.getElementById('game-canvas-area').innerText = "🍣";
+                if (gameProgress.length >= 2) {
+                    gameScore += 10;
+                    gameCoins += 150;
+                    document.getElementById('game-score').innerText = gameScore;
+                    document.getElementById('game-earnings').innerText = gameCoins;
+                    generateNewOrder();
+                    playBeep(1200, 'sine', 0.2);
+                }
+            }, 200);
+        }
+
+        // Mini Game B: Train stop
+        let trainX = 0;
+        let isMoving = false;
+        let trainTimer = null;
+
+        function moveTrain() {
+            if (isMoving) return;
+            playBeep(400, 'sawtooth', 0.2);
+            isMoving = true;
+            document.getElementById('train-status').innerText = "電車加速中... 接近世朗站，請看準時機按下煞車！";
+            trainTimer = setInterval(() => {
+                trainX += 8;
+                if (trainX > 250) {
+                    // Missed
+                    clearInterval(trainTimer);
+                    isMoving = false;
+                    trainX = 0;
+                    document.getElementById('train-status').innerText = "🛑 錯過月台！電車已越線，請重新開車。";
+                    document.getElementById('train-sprite').style.left = `${trainX}px`;
+                    playBeep(150, 'sawtooth', 0.5);
+                } else {
+                    document.getElementById('train-sprite').style.left = `${trainX}px`;
+                }
+            }, 50);
+        }
+
+        function brakeTrain() {
+            if (!isMoving) return;
+            clearInterval(trainTimer);
+            isMoving = false;
+            
+            // Winning range is trainX between 170 and 200
+            if (trainX >= 170 && trainX <= 210) {
+                playBeep(1000, 'sine', 0.3);
+                document.getElementById('train-status').innerText = `🎉 完美靠站！獲得 100 籌幣。`;
+                gameCoins += 100;
+                document.getElementById('game-earnings').innerText = gameCoins;
+            } else {
+                playBeep(250, 'square', 0.3);
+                document.getElementById('train-status').innerText = `❌ 煞車太早或太晚！停靠位置(${trainX}px)不夠精確。`;
             }
-            
-            // 繪製車票背景底圖
-            ctx.fillStyle = "#fff5cc";
-            ctx.fillRect(0, 0, 400, 200);
-            
-            // 側邊邊帶顏色區分
-            ctx.fillStyle = (line === "MML") ? "#58a6ff" : "#f2cc60";
-            ctx.fillRect(0, 0, 20, 200);
-            
-            // 車票標題文字
-            ctx.fillStyle = "#111";
-            ctx.font = "bold 16px Arial";
-            ctx.fillText("135區大眾捷運系統 電子乘車證", 35, 30);
-            
-            ctx.font = "12px Monospace";
-            ctx.fillStyle = "#444";
-            ctx.fillText(`路線: ${line} 線通聯卡`, 35, 55);
-            ctx.fillText(`票價: ${fare} 籌幣 (PAID)`, 35, 75);
-            
-            // 乘車起迄區段
-            ctx.font = "bold 14px Arial";
-            ctx.fillStyle = "#000";
-            ctx.fillText(`FROM: ${fromSt}`, 35, 110);
-            ctx.fillText(`TO:   ${toSt}`, 35, 135);
-            
-            // 隨機防偽條碼與時間戳
-            ctx.fillStyle = "#222";
-            for(let i=0; i<35; i++){
-                let w = Math.random() * 4 + 1;
-                ctx.fillRect(230 + (i*4), 45, w, 40);
-            }
-            
-            ctx.font = "9px Monospace";
-            ctx.fillStyle = "#666";
-            const currentTimestamp = new Date().toISOString().replace('T',' ').substring(0,19);
-            ctx.fillText(`驗證碼: MML-${Math.floor(Math.random()*900000+100000)}`, 35, 170);
-            ctx.fillText(`發票時間: ${currentTimestamp}`, 35, 185);
-            
-            // 中正公司防偽水印
-            ctx.font = "italic bold 32px Arial";
-            ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
-            ctx.fillText("ZHONGZHENG", 80, 110);
-        }
-        // 初始化繪製一張預設票
-        generateElectronicTicket();
-
-        // 拼豆工作坊拖曳與著色核心
-        let currentColor = "#ff4d4d";
-        let currentColorPrice = 12.5;
-        let beadCosts = Array(64).fill(0);
-
-        function selectPaletteColor(hex, id, price) {
-            currentColor = hex;
-            currentColorPrice = price;
-            document.querySelectorAll('.palette-color').forEach(p => p.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
+            trainX = 0;
+            setTimeout(() => {
+                document.getElementById('train-sprite').style.left = `0px`;
+            }, 1500);
         }
 
-        function initBeadGrid() {
-            const container = document.getElementById('pixel-container');
-            container.innerHTML = "";
-            for (let i = 0; i < 64; i++) {
-                let pixel = document.createElement('div');
-                pixel.className = "bead-pixel";
-                pixel.onclick = function() {
-                    this.style.backgroundColor = currentColor;
-                    beadCosts[i] = currentColorPrice;
-                    recalculateBeadTotalCost();
-                };
-                container.appendChild(pixel);
-            }
-        }
-        initBeadGrid();
-
-        function recalculateBeadTotalCost() {
-            const total = beadCosts.reduce((a, b) => a + b, 0);
-            document.getElementById('bead-total-price').innerText = Math.round(total);
-        }
-
-        function clearBeadGrid() {
-            beadCosts.fill(0);
-            document.querySelectorAll('.bead-pixel').forEach(p => p.style.backgroundColor = "#30363d");
-            recalculateBeadTotalCost();
-        }
-
-        // 財政公共賬單運算邏輯
-        function performUtilityCalc() {
-            const waterMl = parseFloat(document.getElementById('calc-water').value) || 0;
-            const elecMin = parseFloat(document.getElementById('calc-electric').value) || 0;
-            // 1杯水(100ml) = 50籌幣 -> 1ml = 0.5籌幣
-            const waterCost = (waterMl / 100) * 50;
-            const elecCost = elecMin * 50;
-            document.getElementById('res-utility').innerText = Math.round(waterCost + elecCost);
-        }
-
-        function performCurrencyCalc() {
-            const twd = parseFloat(document.getElementById('calc-twd').value) || 0;
-            document.getElementById('res-chou').innerText = Math.round(twd * 200);
-            document.getElementById('res-lin').innerText = Math.round(twd * 400);
-        }
-
-        // 後台無縫插槽：美化並永久部署新聞代碼生成器
-        function publishNewsNode() {
-            const date = document.getElementById('adm-date').value;
-            const title = document.getElementById('adm-title').value;
-            const body = document.getElementById('adm-body').value;
-            
-            if(!title || !body) {
-                alert("請完整填寫新聞標題與廣播內文！");
-                return;
-            }
-
-            const newsWall = document.getElementById('news-wall');
-            
-            // 創建DOM節點實體
-            const card = document.createElement('div');
-            card.className = "news-card";
-            card.style.borderLeftColor = "var(--accent-ylb)";
-            
-            const meta = document.createElement('div');
-            meta.className = "news-meta";
-            meta.innerHTML = `<span>📅 ${date}</span> <span style="color:var(--accent-mml)">[即時廣播]</span>`;
-            
-            const tDiv = document.createElement('div');
-            tDiv.className = "news-title";
-            tDiv.innerText = title;
-            
-            const bDiv = document.createElement('div');
-            bDiv.className = "news-body";
-            bDiv.innerText = body;
-            
-            card.appendChild(meta);
-            card.appendChild(tDiv);
-            card.appendChild(bDiv);
-            
-            // 置頂插入新聞牆
-            newsWall.insertBefore(card, newsWall.firstChild);
-            
-            // 自動為總工程師生成對應的 HTML 程式碼片段以供複製
-            const htmlSnippet = `<!-- NEWS_SLOT_ENTRY -->
-<div class="news-card" style="border-left-color: var(--accent-ylb);">
-    <div class="news-meta"><span>📅 ${date}</span> <span style="color:var(--accent-mml)">[即時廣播]</span></div>
-    <div class="news-title">${title}</div>
-    <div class="news-body">${body}</div>
-</div>`;
-            
-            const outBox = document.getElementById('adm-output-code');
-            outBox.innerText = "【複製下方代碼貼回 index.html 的 NEWS_SLOT_START 下方即可永久保存】\n" + htmlSnippet;
-            coutBox.style.display = "block";
-        }
+        // Init setup
+        window.onload = function() {
+            renderSushiMenu();
+            calculateMmlTicket();
+            calculateYlbTicket();
+            calculateUtilities();
+            renderSponsors();
+            generateNewOrder();
+        };
     </script>
 </body>
 </html>
